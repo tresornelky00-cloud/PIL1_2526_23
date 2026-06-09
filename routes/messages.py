@@ -4,7 +4,8 @@ routes/messages.py — Messagerie instantanée (Flask-SocketIO)
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 from flask_socketio import emit, join_room
-from app import db, socketio
+from models import db
+from app import socketio
 from models import User, Conversation, Message
 
 messages_bp = Blueprint("messages", __name__)
@@ -41,7 +42,6 @@ def liste():
         (Conversation.user2_id == current_user.id)
     ).all()
 
-    # Attache l'interlocuteur et le dernier message à chaque conv
     conversations = []
     for conv in convs:
         interlocuteur = conv.user2 if conv.user1_id == current_user.id else conv.user1
@@ -56,7 +56,6 @@ def liste():
             "non_lus": nb_non_lus,
         })
 
-    # Tri : plus récente d'abord
     conversations.sort(
         key=lambda c: c["dernier_msg"].date_envoi if c["dernier_msg"] else c["conv"].date_creation,
         reverse=True
@@ -68,10 +67,9 @@ def liste():
 @login_required
 def ouvrir_conversation(user_id):
     """Ouvre ou crée une conversation avec un autre utilisateur."""
-    interlocuteur = User.query.get_or_404(user_id)
+    interlocuteur = db.get_or_404(User, user_id)
     conv = get_or_create_conversation(current_user.id, interlocuteur.id)
 
-    # Marque les messages non lus comme lus
     conv.messages.filter_by(lu=False).filter(
         Message.expediteur_id == interlocuteur.id
     ).update({"lu": True})
@@ -101,11 +99,11 @@ def on_message(data):
     Reçoit un message du client, le persiste, et le diffuse
     à tous les participants de la conversation.
     """
-    conv = Conversation.query.get(data["conv_id"])
+    # Correction : db.session.get() au lieu de Conversation.query.get()
+    conv = db.session.get(Conversation, data["conv_id"])
     if conv is None:
         return
 
-    # Vérifie que l'expéditeur fait partie de la conversation
     if current_user.id not in (conv.user1_id, conv.user2_id):
         return
 

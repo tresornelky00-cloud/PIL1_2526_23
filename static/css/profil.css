@@ -1,0 +1,207 @@
+/* ==========================================================================
+           CHARTE GRAPHIQUE & CONFIGURATION VISUELLE
+           ========================================================================== */
+        :root {
+            --blue-ifri: #1565C0;       /* Bleu officiel harmonisé */
+            --orange-mentor: #E65100;   /* Orange officiel harmonisé */
+            --green-success: #2E7D32;   /* Vert officiel */
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --gray-border: #cbd5e1;
+            
+            --badge-green-bg: #e8f5e9;
+            --badge-green-txt: #1b5e20;
+            --badge-orange-bg: #fff3e0;
+            --badge-orange-txt: #bf360c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: #334155;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .register-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .sidebar-section {
+            width: 300px;
+            background-color: var(--blue-ifri);
+            color: #ffffff;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* En-tête de barre */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+        }
+
+        .logo-container {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-ifri { color: var(--blue-ifri); }
+        .logo-mentor { color: var(--orange-mentor); }
+
+        .login-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .login-link:hover { color: var(--blue-ifri); text-decoration: underline; }
+
+        /* Ligne tricolore */
+        .triband {
+            display: flex;
+            width: calc(100% + 80px);
+            margin-left: -40px;
+            height: 4px;
+            margin-bottom: 35px;
+        }
+        .triband-blue { background-color: var(--blue-ifri); flex: 1; }
+        .triband-orange { background-color: var(--orange-mentor); flex: 1; }
+        .triband-dark { background-color: #1a1a2e; flex: 1; }
+
+        /* Bannière Héros du Profil */
+        .profile-hero {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .profile-avatar {
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            background-color: var(--blue-ifri);
+            color: white;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.8rem; font-weight: 700;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-info h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; color: #ffffff; }
+        .profile-info p { font-size: 0.9rem; color: #94a3b8; }
+
+        .role-badge {
+            display: inline-block;
+            background-color: rgba(230, 81, 0, 0.2);
+            color: var(--orange-mentor);
+            font-size: 0.75rem;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 6px;
+            border: 1px solid rgba(230, 81, 0, 0.3);
+        }
+
+        /* Grille des cartes */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .profile-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .profile-card.full-width { grid-column: span 2; }
+        .card-title { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); margin-bottom: 12px; }
+        
+        .bio-text { font-size: 0.9rem; color: #475569; line-height: 1.6; font-style: italic; }
+
+        /* Champs de saisie masqués par défaut (mode édition) */
+        .edit-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid var(--gray-border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+            display: none; /* Masqué au départ */
+        }
+        .edit-input:focus { border-color: var(--blue-ifri); }
+        textarea.edit-input { resize: vertical; min-height: 80px; }
+
+        .badge-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .badge { font-size: 0.8rem; font-weight: 600; padding: 6px 14px; border-radius: 20px; }
+        .badge.strength { background-color: var(--badge-green-bg); color: var(--badge-green-txt); }
+        .badge.weakness { background-color: var(--badge-orange-bg); color: var(--badge-orange-txt); }
+
+        .stats-subgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; text-align: center; }
+        .stat-number { font-size: 1.5rem; font-weight: 800; color: var(--blue-ifri); }
+        .stat-label { font-size: 0.75rem; color: #64748b; margin-top: 2px; }
+
+        /* Boutons d'action */
+        .btn-container { display: flex; gap: 16px; margin-top: 30px; }
+        
+        .btn-edit {
+            background-color: var(--blue-ifri); color: #ffffff;
+            flex: 2; padding: 14px 28px; border-radius: 8px; font-size: 0.95rem; font-weight: 600;
+            cursor: pointer; border: none; transition: all 0.2s;
+        }
+        .btn-edit:hover { background-color: #1254A1; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.2); }
+        
+        /* Bouton Sauvegarder (masqué par défaut) */
+        .btn-save {
+            background-color: var(--green-success); color: white; display: none;
+        }
+        .btn-save:hover { background-color: #1B5E20; }
+
+        .btn-logout {
+            background-color: transparent; color: #ef4444; border: 1px solid #fca5a5;
+            flex: 1; padding: 14px 20px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+            text-align: center; text-decoration: none;
+        }
+        .btn-logout:hover { background-color: #fef2f2; border-color: #ef4444; }
+
+        /* Sidebar Droite */
+        .sidebar-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 30px; color: #ffffff; }
+        .benefit-item { display: flex; align-items: flex-start; margin-bottom: 25px; font-size: 0.9rem; line-height: 1.5; color: #f1f5f9; }
+        .benefit-icon {
+            width: 18px; height: 18px; background-color: var(--orange-mentor);
+            border-radius: 50%; margin-right: 14px; margin-top: 2px; flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }

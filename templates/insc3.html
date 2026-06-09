@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'inscription - IFRI MentorLink</title>
+    <link rel="stylesheet" href="insc3.css">
+    <link rel="icon" href="Logo Ifri Mentor Link.jpg">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-text">IFRI <span>MentorLink</span></div>
+        <div class="nav-right"><a href="connexion.html">Connexion →</a></div>
+    </nav>
+
+    <div class="triband">
+        <div class="band-blue"></div>
+        <div class="band-green"></div>
+        <div class="band-orange"></div>
+    </div>
+
+    <main class="main-container">
+        <section class="form-section">
+            
+            <div class="stepper">
+                <div class="step-line"></div>
+                <div class="step-line-progress" id="stepLineProgress"></div>
+                <div class="step active" id="stepIndicator1"><div class="step-circle">1</div><div class="step-label">Identité</div></div>
+                <div class="step" id="stepIndicator2"><div class="step-circle">2</div><div class="step-label">Profil</div></div>
+                <div class="step" id="stepIndicator3"><div class="step-circle">3</div><div class="step-label">Créneaux</div></div>
+            </div>
+
+            <form id="registrationForm" novalidate>
+                
+                <!-- ÉTAPE 1 : Informations personnelles -->
+                <div class="step-content active" id="stepContent1">
+                    <h2>Informations personnelles</h2>
+
+                    <div class="form-row">
+                        <!-- Prénom : 2 messages d'erreur distincts (vide / mauvais format) -->
+                        <div class="form-group">
+                            <label for="firstname">Prénom <span class="required">*</span></label>
+                            <input type="text" id="firstname" placeholder="Ex: Koffi">
+                            <div class="error-message">Veuillez obligatoirement renseigner votre prénom.</div>
+                            <div class="error-message">Le prénom ne doit contenir que des lettres (pas de chiffres).</div>
+                        </div>
+                        <!-- Nom : 2 messages d'erreur distincts (vide / mauvais format) -->
+                        <div class="form-group">
+                            <label for="lastname">Nom <span class="required">*</span></label>
+                            <input type="text" id="lastname" placeholder="Ex: ADANNOU">
+                            <div class="error-message">Veuillez obligatoirement renseigner votre nom.</div>
+                            <div class="error-message">Le nom ne doit contenir que des lettres (pas de chiffres).</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Institutionnel ou Personnel <span class="required">*</span></label>
+                        <input type="email" id="email" required placeholder="exemple@ifri.uac.bj">
+                        <div class="error-message">Veuillez entrer une adresse email valide (contenant un '@' et un domaine).</div>
+                    </div>
+
+                    <!-- Mot de passe : minlength=6 pour bloquer aussi côté HTML5 -->
+                    <div class="form-group">
+                        <label for="password">Mot de passe <span class="required">*</span></label>
+                        <input type="password" id="password" required minlength="6" placeholder="Au moins 6 caractères">
+                        <div class="error-message">Le mot de passe doit contenir au moins 6 caractères.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerPhone">Numéro de téléphone <span class="required">*</span></label>
+                        <input type="tel" id="registerPhone" placeholder="Ex: 0123456789" maxlength="10" required>
+                        <div class="error-message">Le numéro doit comporter exactement 10 chiffres et commencer par 01 !</div>
+                        <div class="form-text" style="color: #666; font-size: 0.8rem; margin-top: 5px;">
+                            Le numéro doit obligatoirement commencer par 01 (ex: 01 99 99 99 99).
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <div></div>
+                        <button type="button" class="btn btn-next" onclick="navigateStep(1, 2)">Suivant ➔</button>
+                    </div>
+                </div>
+
+                <!-- ÉTAPE 2 : Parcours IFRI -->
+                <div class="step-content" id="stepContent2">
+                    <h2>Votre parcours à l'IFRI</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="filiere">Filière d'étude <span class="required">*</span></label>
+                            <select id="filiere" required>
+                                <option value="" disabled selected>Choisir une filière</option>
+                                <option value="GL">Génie Logiciel (GL)</option>
+                                <option value="SI">SEIoT</option>
+                                <option value="Sec">Sécurité Informatique (SI)</option>
+                                <option value="IA">Intelligence Artificielle</option>
+                            </select>
+                            <div class="error-message">Veuillez sélectionner votre filière.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="niveau">Niveau <span class="required">*</span></label>
+                            <select id="niveau" required>
+                                <option value="" disabled selected>Choisir votre niveau</option>
+                                <option value="L1">Licence 1 (L1)</option>
+                                <option value="L2">Licence 2 (L2)</option>
+                                <option value="L3">Licence 3 (L3)</option>
+                                <option value="M1">Master 1 (M1)</option>
+                                <option value="M2">Master 2 (M2)</option>
+                            </select>
+                            <div class="error-message">Veuillez spécifier votre niveau actuel.</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="skillInput">Matières maîtrisées (Points forts) (Appuyez sur Entrée ou +) <span class="required">*</span></label>
+                        <div class="skill-input-container" style="display: flex; gap: 10px; margin-bottom: 12px;">
+                            <input type="text" id="skillInput" placeholder="Ex: Algorithmique, Java, SQL...">
+                            <button type="button" id="btnAddSkill" style="background-color: #1565C0; color: white; border: none; padding: 0 18px; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer;">+</button>
+                        </div>
+                        <input type="hidden" id="skillsSelected">
+                        <div class="badge-container" id="badgeContainer" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; min-height: 34px; padding: 6px; border: 1px dashed #cfd8dc; border-radius: 6px; background-color: #fcfcfc;"></div>
+                        <div class="error-message" id="skillsError">Vous devez ajouter au moins une matière maîtrisée.</div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="weaknessInput">Matières à améliorer (Points faibles) (Appuyez sur Entrée ou +) <span class="required">*</span></label>
+                        <div class="skill-input-container" style="display: flex; gap: 10px; margin-bottom: 12px;">
+                            <input type="text" id="weaknessInput" placeholder="Ex: Compilation, Statistiques...">
+                            <button type="button" id="btnAddWeakness" style="background-color: #e65100; color: white; border: none; padding: 0 18px; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer;">+</button>
+                        </div>
+                        <input type="hidden" id="weaknessesSelected">
+                        <div class="badge-container" id="weaknessBadgeContainer" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; min-height: 34px; padding: 6px; border: 1px dashed #ffcc80; border-radius: 6px; background-color: #fdfaf8;"></div>
+                        <div class="error-message" id="weaknessesError">Vous devez ajouter au moins une matière à améliorer.</div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-prev" onclick="navigateStep(2, 1)">Précédent</button>
+                        <button type="button" class="btn btn-next" onclick="navigateStep(2, 3)">Suivant ➔</button>
+                    </div>
+                </div>
+
+                <!-- ÉTAPE 3 : Rôle & Disponibilités -->
+                <div class="step-content" id="stepContent3">
+                    <h2>Rôle & Disponibilités</h2>
+                    
+                    <div class="form-group">
+                        <label>Quel est votre objectif ? <span class="required">*</span></label>
+                        <input type="hidden" id="userRole">
+                        <div class="role-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div class="role-card" id="roleMentor" onclick="selectRole('Mentor')" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; cursor: pointer; text-align: center;">
+                                <div class="role-title" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 5px;">🎓 Devenir Mentor</div>
+                                <div class="role-desc" style="font-size: 0.85rem; color: #555;">Je veux guider et partager mes acquis.</div>
+                            </div>
+                            <div class="role-card" id="roleMentore" onclick="selectRole('Mentoré')" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; cursor: pointer; text-align: center;">
+                                <div class="role-title" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 5px;">💻 Trouver un Mentor</div>
+                                <div class="role-desc" style="font-size: 0.85rem; color: #555;">Je souhaite être accompagné et progresser.</div>
+                            </div>
+                        </div>
+                        <div class="error-message" id="roleError">Veuillez obligatoirement sélectionner un rôle.</div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 25px;">
+                        <label>Vos créneaux libres (Sélectionnez au moins une case) <span class="required">*</span></label>
+                        <div class="table-responsive">
+                            <table class="availability-table" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                                <thead>
+                                    <tr style="background-color: #f5f5f5;">
+                                        <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Jour</th>
+                                        <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Matin</th>
+                                        <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Après-midi</th>
+                                        <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Soir</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="availabilityBody"></tbody>
+                            </table>
+                        </div>
+                        <input type="hidden" id="availabilityTrigger">
+                        <div class="error-message" id="availabilityError" style="margin-top: 10px;">Veuillez cocher au moins une case horaire libre.</div>
+                    </div>
+
+                    <div class="button-group" style="margin-top: 30px;">
+                        <button type="button" class="btn btn-prev" onclick="navigateStep(3, 2)">Précédent</button>
+                        <button type="submit" class="btn btn-next" style="background-color: #2E7D32; color: white;"> <a href="dashboard.html">Valider l'inscription ✓</a></button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <aside class="info-sidebar">
+            <h3 class="sidebar-title">IFRI MentorLink</h3>
+            <ul class="advantages-list">
+                <li class="advantage-item">Entraide exclusive entre étudiants de l'IFRI</li>
+                <li class="advantage-item">Système intelligent basé sur vos filières</li>
+                <li class="advantage-item">Planification simplifiée des sessions d'apprentissage</li>
+            </ul>
+        </aside>
+    </main>
+
+    <script src="insc3.js"></script>
+</body>
+</html>

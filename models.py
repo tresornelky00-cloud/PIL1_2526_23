@@ -3,12 +3,17 @@ models.py — Modèles de la base de données (SQLAlchemy)
 """
 from datetime import datetime
 from flask_login import UserMixin
-from app import db, login_manager
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+
+db = SQLAlchemy()
+login_manager = LoginManager()
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    # db.session.get() est la méthode recommandée (SQLAlchemy 2+)
+    return db.session.get(User, int(user_id))
 
 
 # ── Table pivot users ↔ competences ──────────────────────────
@@ -40,13 +45,11 @@ class User(UserMixin, db.Model):
     date_inscription = db.Column(db.DateTime, default=datetime.utcnow)
     actif            = db.Column(db.Boolean, default=True)
 
-    # Relations
-    competences   = db.relationship("UserCompetence", backref="user",   lazy="dynamic")
+    competences    = db.relationship("UserCompetence", backref="user",   lazy="dynamic")
     disponibilites = db.relationship("Disponibilite",  backref="user",   lazy="dynamic")
-    offres        = db.relationship("OffreMentorat",   backref="auteur", lazy="dynamic")
+    offres         = db.relationship("OffreMentorat",  backref="auteur", lazy="dynamic")
 
     def maitrisees(self):
-        """Retourne les compétences maîtrisées de l'utilisateur."""
         return (
             db.session.query(Competence)
             .join(UserCompetence)
@@ -56,7 +59,6 @@ class User(UserMixin, db.Model):
         )
 
     def lacunes(self):
-        """Retourne les lacunes de l'utilisateur."""
         return (
             db.session.query(Competence)
             .join(UserCompetence)

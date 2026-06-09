@@ -4,7 +4,7 @@ routes/profil.py — Dashboard, profil, compétences, disponibilités
 from datetime import time
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from app import db
+from models import db
 from models import User, Competence, UserCompetence, Disponibilite, OffreMentorat
 
 profil_bp = Blueprint("profil", __name__)
@@ -23,16 +23,13 @@ def profil():
     toutes_competences = Competence.query.order_by(Competence.categorie).all()
 
     if request.method == "POST":
-        # Mise à jour infos générales
         current_user.bio     = request.form.get("bio", "").strip()
         current_user.filiere = request.form.get("filiere")
         current_user.niveau  = request.form.get("niveau")
 
-        # Compétences maîtrisées
         maitrisees = request.form.getlist("maitrisees")
         lacunes    = request.form.getlist("lacunes")
 
-        # Supprime et recrée les compétences
         UserCompetence.query.filter_by(user_id=current_user.id).delete()
         for cid in maitrisees:
             db.session.add(UserCompetence(
@@ -41,16 +38,15 @@ def profil():
                 type="maitrise"
             ))
         for cid in lacunes:
-            if cid not in maitrisees:   # pas les deux en même temps
+            if cid not in maitrisees:
                 db.session.add(UserCompetence(
                     user_id=current_user.id,
                     competence_id=int(cid),
                     type="lacune"
                 ))
 
-        # Disponibilités
         Disponibilite.query.filter_by(user_id=current_user.id).delete()
-        jours = request.form.getlist("jours[]")
+        jours  = request.form.getlist("jours[]")
         debuts = request.form.getlist("debut[]")
         fins   = request.form.getlist("fin[]")
         for j, d, f in zip(jours, debuts, fins):
@@ -104,7 +100,7 @@ def nouvelle_offre():
 @profil_bp.route("/offre/<int:offre_id>/supprimer", methods=["POST"])
 @login_required
 def supprimer_offre(offre_id):
-    offre = OffreMentorat.query.get_or_404(offre_id)
+    offre = db.get_or_404(OffreMentorat, offre_id)
     if offre.user_id != current_user.id:
         flash("Action non autorisée.", "danger")
         return redirect(url_for("profil.dashboard"))
@@ -117,5 +113,5 @@ def supprimer_offre(offre_id):
 @profil_bp.route("/utilisateur/<int:user_id>")
 @login_required
 def voir_profil(user_id):
-    user = User.query.get_or_404(user_id)
+    user = db.get_or_404(User, user_id)
     return render_template("voir_profil.html", user=user)

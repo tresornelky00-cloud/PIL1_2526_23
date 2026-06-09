@@ -1,65 +1,77 @@
-# 🎓 IFRI MentorLink
+# IFRI MentorLink
 
-Application de mise en relation mentor/mentoré — Projet PIL1 2025-2026
+Plateforme de mise en relation mentor-mentoré pour les étudiants de l'IFRI.
 
-## Structure
+## Stack technique
 
-```
-ifri_mentorlink/
-├── app.py              # Point d'entrée Flask
-├── models.py           # Modèles SQLAlchemy
-├── matching.py         # Algorithme de scoring
-├── schema.sql          # Schéma base de données + données initiales
-├── requirements.txt
-├── .env.example        # Variables d'environnement (à copier en .env)
-├── routes/
-│   ├── auth.py         # Inscription / Connexion
-│   ├── profil.py       # Profil, compétences, offres
-│   ├── matching.py     # Suggestions + liste offres
-│   └── messages.py     # Messagerie temps réel (SocketIO)
-├── templates/          # Pages HTML (Jinja2)
-└── static/css/         # style.css
-```
+- **Backend** : Python / Flask + Flask-SocketIO
+- **Base de données** : MySQL (via SQLAlchemy + PyMySQL)
+- **Auth** : Flask-Login + Flask-Bcrypt
+- **Temps réel** : SocketIO (messagerie instantanée)
 
 ## Installation
 
+### 1. Cloner le projet
 ```bash
-# 1. Cloner le repo
-git clone https://github.com/votre-groupe/PIL1_2526_XX.git
+git clone https://github.com/VOTRE_COMPTE/PIL1_2526_XX.git
 cd PIL1_2526_XX
+```
 
-# 2. Environnement virtuel
+### 2. Créer l'environnement virtuel
+```bash
 python -m venv venv
-source venv/bin/activate   # Windows : venv\Scripts\activate
+# Windows
+venv\Scripts\activate
+# Linux / Mac
+source venv/bin/activate
+```
 
-# 3. Dépendances
+### 3. Installer les dépendances
+```bash
 pip install -r requirements.txt
+```
 
-# 4. Base de données MySQL
-mysql -u root -p < schema.sql
-# (crée la base, les tables et les compétences de départ)
-
-# 5. Variables d'environnement
+### 4. Configurer les variables d'environnement
+```bash
 cp .env.example .env
-# Éditer .env : mettre votre mot de passe MySQL
+# Éditer .env avec vos vraies valeurs
+```
 
-# 6. Lancer
+### 5. Créer la base de données
+```bash
+mysql -u root -p < schema.sql
+```
+
+### 6. Lancer le serveur
+```bash
 python app.py
-# → http://localhost:5000
 ```
 
-## Variables d'environnement (.env)
+Accéder à : http://localhost:5000
+
+## Structure du projet
 
 ```
-SECRET_KEY=une-chaine-aleatoire-longue
-DATABASE_URL=mysql://root:VOTRE_MDP@localhost/ifri_mentorlink
+ifri_mentorlink/
+├── app.py              # Application Flask principale
+├── models.py           # Modèles SQLAlchemy
+├── matching.py         # Algorithme de matching
+├── schema.sql          # Schéma MySQL
+├── requirements.txt
+├── .env.example        # Template des variables d'environnement
+├── .gitignore
+├── routes/
+│   ├── auth.py         # Inscription / connexion
+│   ├── profil.py       # Dashboard, profil, compétences
+│   ├── matching.py     # Suggestions & offres
+│   └── messages.py     # Messagerie (SocketIO)
+├── templates/          # Templates Jinja2
+└── static/             # CSS, JS, images
 ```
 
-## Fonctionnalités
+## Algorithme de matching
 
-| Module | Routes |
-|--------|--------|
-| Auth | `/inscription`, `/connexion`, `/deconnexion` |
-| Profil | `/dashboard`, `/profil`, `/offre/nouvelle` |
-| Matching | `/matching`, `/offres` |
-| Messages | `/messages`, `/messages/<id>` |
+Le score de compatibilité est calculé ainsi :
+- **50%** — Couverture des lacunes du mentoré par les compétences du mentor
+- **30%** — Proximité des filières
+- **20%** — Compatibilité des disponibilités horaires

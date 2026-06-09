@@ -3,7 +3,8 @@ routes/auth.py — Inscription, connexion, déconnexion
 """
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from app import db, bcrypt
+from models import db
+from app import bcrypt
 from models import User
 
 auth_bp = Blueprint("auth", __name__)
@@ -31,7 +32,6 @@ def inscription():
         password  = request.form.get("mot_de_passe", "")
         confirm   = request.form.get("confirm_mdp", "")
 
-        # Validations
         if password != confirm:
             flash("Les mots de passe ne correspondent pas.", "danger")
             return render_template("inscription.html")
@@ -65,7 +65,6 @@ def login():
         identifiant = request.form.get("identifiant", "").strip().lower()
         password    = request.form.get("mot_de_passe", "")
 
-        # Recherche par email ou téléphone
         user = User.query.filter(
             (User.email == identifiant) | (User.telephone == identifiant)
         ).first()

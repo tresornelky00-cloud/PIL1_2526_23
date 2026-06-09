@@ -3,7 +3,7 @@ routes/matching.py — Suggestions de matching, offres, contact
 """
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from app import db
+from models import db
 from models import User, OffreMentorat, Competence, Match
 from matching import proposer_matchs
 
@@ -23,10 +23,9 @@ def index():
 def contacter(mentor_id):
     """Crée ou retrouve la conversation avec ce mentor et redirige."""
     from routes.messages import get_or_create_conversation
-    mentor = User.query.get_or_404(mentor_id)
+    mentor = db.get_or_404(User, mentor_id)
     conv = get_or_create_conversation(current_user.id, mentor.id)
 
-    # Enregistre le match si pas encore fait
     match_existe = Match.query.filter_by(
         mentor_id=mentor.id, mentore_id=current_user.id
     ).first()

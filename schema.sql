@@ -102,30 +102,24 @@ CREATE TABLE IF NOT EXISTS messages (
 
 -- ── Données initiales : compétences ──────────────────────────
 INSERT IGNORE INTO competences (nom, categorie) VALUES
-  -- Programmation
-  ('Python',        'Programmation'),
-  ('Java',          'Programmation'),
-  ('C/C++',         'Programmation'),
-  ('JavaScript',    'Programmation'),
-  ('PHP',           'Programmation'),
-  -- Web
-  ('HTML/CSS',      'Web'),
-  ('React',         'Web'),
-  ('Flask/Django',  'Web'),
-  ('Node.js',       'Web'),
-  -- Bases de données
-  ('SQL/MySQL',     'Bases de données'),
-  ('PostgreSQL',    'Bases de données'),
-  ('MongoDB',       'Bases de données'),
-  -- Mathématiques
-  ('Algèbre linéaire',      'Mathématiques'),
-  ('Probabilités',          'Mathématiques'),
+  ('Python',                    'Programmation'),
+  ('Java',                      'Programmation'),
+  ('C/C++',                     'Programmation'),
+  ('JavaScript',                'Programmation'),
+  ('PHP',                       'Programmation'),
+  ('HTML/CSS',                  'Web'),
+  ('React',                     'Web'),
+  ('Flask/Django',              'Web'),
+  ('Node.js',                   'Web'),
+  ('SQL/MySQL',                 'Bases de données'),
+  ('PostgreSQL',                'Bases de données'),
+  ('MongoDB',                   'Bases de données'),
+  ('Algèbre linéaire',          'Mathématiques'),
+  ('Probabilités',              'Mathématiques'),
   ('Équations différentielles', 'Mathématiques'),
-  -- Systèmes
-  ('Linux/Unix',            'Systèmes'),
-  ('Réseaux',               'Systèmes'),
-  ('Arduino/IoT',           'Systèmes'),
-  -- IA
-  ('Machine Learning',      'Intelligence Artificielle'),
-  ('Deep Learning',         'Intelligence Artificielle'),
-  ('Traitement d''images',  'Intelligence Artificielle');
+  ('Linux/Unix',                'Systèmes'),
+  ('Réseaux',                   'Systèmes'),
+  ('Arduino/IoT',               'Systèmes'),
+  ('Machine Learning',          'Intelligence Artificielle'),
+  ('Deep Learning',             'Intelligence Artificielle'),
+  ('Traitement d''images',      'Intelligence Artificielle');
