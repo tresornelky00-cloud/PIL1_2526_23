@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Matching — MentorLink{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>Suggestions de mentors</h2>
+  <p>Classés par score de compatibilité (compétences 50% · filière 30% · horaires 20%)</p>
+</div>
+
+{% if suggestions %}
+  <div class="match-grid">
+    {% for s in suggestions %}
+    <div class="match-card">
+      <div class="match-avatar">
+        {{ s.mentor.prenom[0] }}{{ s.mentor.nom[0] }}
+      </div>
+      <div class="match-info">
+        <h4>{{ s.mentor.prenom }} {{ s.mentor.nom }}</h4>
+        <p class="text-muted">{{ s.mentor.filiere }} · {{ s.mentor.niveau }}</p>
+        <div class="tags-row" style="margin-top:8px">
+          {% for c in s.mentor.maitrisees() %}
+            <span class="tag tag-green">✓ {{ c.nom }}</span>
+          {% endfor %}
+        </div>
+        <div class="tags-row" style="margin-top:4px">
+          {% for d in s.mentor.disponibilites.all() %}
+            <span class="tag tag-gray">{{ d.jour }} {{ d.heure_debut.strftime('%Hh') }}-{{ d.heure_fin.strftime('%Hh') }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="match-score-col">
+        <div class="score-circle {% if s.score >= 80 %}high{% elif s.score >= 60 %}mid{% else %}low{% endif %}">
+          {{ s.score | int }}%
+        </div>
+        <form method="POST" action="{{ url_for('matching.contacter', mentor_id=s.mentor.id) }}">
+          <button type="submit" class="btn btn-primary" style="margin-top:10px;font-size:13px">Contacter</button>
+        </form>
+        <a href="{{ url_for('profil.voir_profil', user_id=s.mentor.id) }}"
+           class="btn btn-outline" style="margin-top:6px;font-size:13px">Voir profil</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state-box">
+    <p>Aucun mentor trouvé pour l'instant.</p>
+    <p>Renseignez vos <a href="{{ url_for('profil.profil') }}">lacunes dans votre profil</a> pour améliorer les suggestions.</p>
+  </div>
+{% endif %}
+{% endblock %}

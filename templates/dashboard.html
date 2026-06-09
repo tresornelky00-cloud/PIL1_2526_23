@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — MentorLink{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>Bonjour, {{ current_user.prenom }} 👋</h2>
+  <p>{{ current_user.filiere }} · {{ current_user.niveau }} · IFRI, UAC</p>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <span class="stat-label">Offres actives</span>
+    <span class="stat-value">{{ offres | length }}</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Compétences maîtrisées</span>
+    <span class="stat-value">{{ current_user.maitrisees() | length }}</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Lacunes déclarées</span>
+    <span class="stat-value">{{ current_user.lacunes() | length }}</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h3>Mes offres / demandes de mentorat</h3>
+    <a href="{{ url_for('profil.nouvelle_offre') }}" class="btn btn-primary">+ Nouvelle offre</a>
+  </div>
+  {% if offres %}
+    {% for offre in offres %}
+    <div class="list-card">
+      <div class="list-card-info">
+        <span class="badge badge-{% if offre.type_offre == 'offre' %}green{% else %}amber{% endif %}">
+          {{ 'Offre' if offre.type_offre == 'offre' else 'Demande' }}
+        </span>
+        <strong>{{ offre.competence.nom }}</strong>
+        <span class="text-muted">· {{ offre.format.replace('_',' ') }} · {{ offre.date_creation.strftime('%d/%m/%Y') }}</span>
+      </div>
+      <form method="POST" action="{{ url_for('profil.supprimer_offre', offre_id=offre.id) }}" style="display:inline">
+        <button type="submit" class="btn btn-danger-sm"
+                onclick="return confirm('Supprimer cette offre ?')">Retirer</button>
+      </form>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="empty-state">Aucune offre publiée. <a href="{{ url_for('profil.nouvelle_offre') }}">Créez-en une !</a></p>
+  {% endif %}
+</div>
+
+<div class="section">
+  <div class="section-head">
+    <h3>Mes compétences</h3>
+    <a href="{{ url_for('profil.profil') }}" class="btn btn-outline">Modifier</a>
+  </div>
+  <div class="tags-row">
+    {% for c in current_user.maitrisees() %}
+      <span class="tag tag-green">✓ {{ c.nom }}</span>
+    {% endfor %}
+    {% for c in current_user.lacunes() %}
+      <span class="tag tag-amber">? {{ c.nom }}</span>
+    {% endfor %}
+    {% if not current_user.maitrisees() and not current_user.lacunes() %}
+      <p class="empty-state"><a href="{{ url_for('profil.profil') }}">Renseignez vos compétences</a></p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

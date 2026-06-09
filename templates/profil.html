@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Mon Profil — MentorLink{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>Mon Profil</h2>
+  <p>Renseignez vos compétences et disponibilités pour un meilleur matching</p>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+  <!-- Infos générales -->
+  <div class="section">
+    <div class="section-head"><h3>Informations générales</h3></div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Filière</label>
+          <select name="filiere">
+            {% for f in ["GL","IA","IM","SE_IoT","SI"] %}
+            <option value="{{ f }}" {% if current_user.filiere == f %}selected{% endif %}>{{ f }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Niveau</label>
+          <select name="niveau">
+            {% for n in ["L1","L2","L3","M1","M2"] %}
+            <option value="{{ n }}" {% if current_user.niveau == n %}selected{% endif %}>{{ n }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Bio (présentation courte)</label>
+        <textarea name="bio" rows="3" placeholder="Parlez un peu de vous…">{{ current_user.bio or '' }}</textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compétences -->
+  <div class="section">
+    <div class="section-head">
+      <h3>Compétences</h3>
+      <span class="text-muted" style="font-size:13px">
+        <span style="color:var(--green)">■</span> Maîtrisée &nbsp;
+        <span style="color:var(--amber)">■</span> Lacune
+      </span>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+      {% set categories = competences | groupby('categorie') %}
+      {% for cat, comps in categories %}
+        <h4 style="font-size:13px;color:var(--text-muted);margin:14px 0 8px">{{ cat }}</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          {% for comp in comps %}
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:90px;">
+            <span style="font-size:13px;text-align:center">{{ comp.nom }}</span>
+            <div style="display:flex;gap:6px;">
+              <label title="Maîtrisée" style="cursor:pointer">
+                <input type="checkbox" name="maitrisees" value="{{ comp.id }}"
+                       {% if comp.id in maitrisees_ids %}checked{% endif %}
+                       style="accent-color:var(--green)">
+                <span style="font-size:11px;color:var(--green)">✓</span>
+              </label>
+              <label title="Lacune" style="cursor:pointer">
+                <input type="checkbox" name="lacunes" value="{{ comp.id }}"
+                       {% if comp.id in lacunes_ids %}checked{% endif %}
+                       style="accent-color:var(--amber)">
+                <span style="font-size:11px;color:var(--amber)">?</span>
+              </label>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Disponibilités -->
+  <div class="section">
+    <div class="section-head">
+      <h3>Disponibilités</h3>
+      <button type="button" class="btn btn-outline btn-sm" onclick="ajouterDispo()">+ Ajouter</button>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+      <div id="dispos-container">
+        {% for d in dispos %}
+        <div class="dispo-row" style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
+          <select name="jours[]" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px">
+            {% for j in ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"] %}
+            <option value="{{ j }}" {% if d.jour == j %}selected{% endif %}>{{ j }}</option>
+            {% endfor %}
+          </select>
+          <input type="time" name="debut[]" value="{{ d.heure_debut.strftime('%H:%M') }}"
+                 style="padding:8px;border:1px solid var(--border);border-radius:8px">
+          <span>→</span>
+          <input type="time" name="fin[]" value="{{ d.heure_fin.strftime('%H:%M') }}"
+                 style="padding:8px;border:1px solid var(--border);border-radius:8px">
+          <button type="button" onclick="this.parentElement.remove()"
+                  style="color:var(--red);background:none;border:none;cursor:pointer;font-size:18px">✕</button>
+        </div>
+        {% endfor %}
+      </div>
+      {% if not dispos %}
+      <p class="empty-state">Aucune disponibilité. Cliquez sur "+ Ajouter".</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Enregistrer le profil</button>
+</form>
+
+<script>
+function ajouterDispo() {
+  const jours = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+  const row = document.createElement("div");
+  row.className = "dispo-row";
+  row.style = "display:flex;gap:10px;align-items:center;margin-bottom:10px;";
+  row.innerHTML = `
+    <select name="jours[]" style="flex:1;padding:8px;border:1px solid #e5e7eb;border-radius:8px">
+      ${jours.map(j => `<option value="${j}">${j}</option>`).join("")}
+    </select>
+    <input type="time" name="debut[]" value="08:00" style="padding:8px;border:1px solid #e5e7eb;border-radius:8px">
+    <span>→</span>
+    <input type="time" name="fin[]" value="12:00" style="padding:8px;border:1px solid #e5e7eb;border-radius:8px">
+    <button type="button" onclick="this.parentElement.remove()"
+            style="color:#dc2626;background:none;border:none;cursor:pointer;font-size:18px">✕</button>
+  `;
+  document.getElementById("dispos-container").appendChild(row);
+}
+</script>
+{% endblock %}
