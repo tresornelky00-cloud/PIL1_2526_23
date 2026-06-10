@@ -11,15 +11,11 @@ from models import User, Conversation, Message
 messages_bp = Blueprint("messages", __name__)
 
 
-# ── Helpers ──────────────────────────────────────────────────
-
 def get_or_create_conversation(user1_id: int, user2_id: int) -> Conversation:
-    """Retourne la conversation existante ou en crée une nouvelle."""
     conv = Conversation.query.filter(
         ((Conversation.user1_id == user1_id) & (Conversation.user2_id == user2_id)) |
         ((Conversation.user1_id == user2_id) & (Conversation.user2_id == user1_id))
     ).first()
-
     if not conv:
         conv = Conversation(user1_id=user1_id, user2_id=user2_id)
         db.session.add(conv)
@@ -31,12 +27,9 @@ def room_id(conv_id: int) -> str:
     return f"conv_{conv_id}"
 
 
-# ── Routes HTTP ───────────────────────────────────────────────
-
 @messages_bp.route("/messages")
 @login_required
 def liste():
-    """Liste toutes les conversations de l'utilisateur."""
     convs = Conversation.query.filter(
         (Conversation.user1_id == current_user.id) |
         (Conversation.user2_id == current_user.id)
@@ -46,8 +39,8 @@ def liste():
     for conv in convs:
         interlocuteur = conv.user2 if conv.user1_id == current_user.id else conv.user1
         dernier_msg   = conv.messages.order_by(Message.date_envoi.desc()).first()
-        nb_non_lus    = conv.messages.filter_by(
-            lu=False
+        nb_non_lus    = Message.query.filter_by(
+            conversation_id=conv.id, lu=False
         ).filter(Message.expediteur_id != current_user.id).count()
         conversations.append({
             "conv": conv,
@@ -66,11 +59,13 @@ def liste():
 @messages_bp.route("/messages/<int:user_id>")
 @login_required
 def ouvrir_conversation(user_id):
-    """Ouvre ou crée une conversation avec un autre utilisateur."""
     interlocuteur = db.get_or_404(User, user_id)
     conv = get_or_create_conversation(current_user.id, interlocuteur.id)
 
-    conv.messages.filter_by(lu=False).filter(
+    Message.query.filter_by(
+        conversation_id=conv.id,
+        lu=False
+    ).filter(
         Message.expediteur_id == interlocuteur.id
     ).update({"lu": True})
     db.session.commit()
@@ -85,25 +80,16 @@ def ouvrir_conversation(user_id):
     )
 
 
-# ── Événements SocketIO ───────────────────────────────────────
-
 @socketio.on("rejoindre")
 def on_rejoindre(data):
-    """Le client rejoint la room de sa conversation."""
     join_room(room_id(data["conv_id"]))
 
 
 @socketio.on("envoyer_message")
 def on_message(data):
-    """
-    Reçoit un message du client, le persiste, et le diffuse
-    à tous les participants de la conversation.
-    """
-    # Correction : db.session.get() au lieu de Conversation.query.get()
     conv = db.session.get(Conversation, data["conv_id"])
     if conv is None:
         return
-
     if current_user.id not in (conv.user1_id, conv.user2_id):
         return
 
