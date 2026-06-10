@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rapport de Projet — IFRI MentorLink — Groupe 23</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #1A7FE8;
+      --orange:      #FF7A00;
+      --dark:        #1A1A2E;
+      --text:        #1e2330;
+      --muted:       #5a6376;
+      --border:      #dde2ec;
+      --bg:          #f7f8fb;
+      --white:       #ffffff;
+      --radius:      6px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--dark);
+      color: var(--white);
+      padding: 40px 0 32px;
+      text-align: center;
+    }
+    .logo-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .logo-ifri   { color: var(--blue);   font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .logo-mentor { background: var(--orange); color: #fff; font-size: 18px; font-weight: 700; padding: 2px 10px; border-radius: 4px; }
+    .logo-link   { color: var(--orange); font-size: 22px; font-style: italic; font-weight: 600; }
+
+    header h1 { font-size: 18px; font-weight: 400; color: rgba(255,255,255,0.75); margin-bottom: 8px; }
+    .header-meta { display: flex; justify-content: center; gap: 32px; font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 10px; }
+    .header-meta span strong { color: rgba(255,255,255,0.85); }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    nav ul { display: flex; list-style: none; gap: 0; overflow-x: auto; }
+    nav ul li a {
+      display: block;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+    }
+    nav ul li a:hover { color: var(--blue); }
+    nav ul li a.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 500; }
+
+    /* ── SECTIONS ── */
+    .section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 28px 0;
+      overflow: hidden;
+    }
+    .section-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-header h2 { font-size: 16px; font-weight: 600; color: var(--dark); }
+    .section-body { padding: 24px; }
+
+    /* ── TYPOGRAPHY ── */
+    h3 { font-size: 14px; font-weight: 600; color: var(--dark); margin: 20px 0 10px; }
+    h3:first-child { margin-top: 0; }
+    p { margin-bottom: 12px; color: var(--text); }
+    p:last-child { margin-bottom: 0; }
+
+    ul.list, ol.list { padding-left: 20px; margin-bottom: 12px; }
+    ul.list li, ol.list li { margin-bottom: 6px; }
+
+    /* ── TABLE MEMBRES ── */
+    .members-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .members-table th {
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .members-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .members-table tr:last-child td { border-bottom: none; }
+    .members-table tr:hover td { background: #fafbfd; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-blue   { background: #E8F3FE; color: var(--blue); }
+    .badge-orange { background: #FFF3E6; color: var(--orange); }
+    .badge-gray   { background: #f0f2f5; color: var(--muted); }
+    .role-badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--dark);
+      color: #fff;
+    }
+
+    /* ── ARBORESCENCE ── */
+    .tree {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      background: #f7f8fb;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      color: var(--text);
+    }
+    .tree .folder { color: var(--blue); font-weight: 600; }
+    .tree .file   { color: var(--muted); }
+    .tree .desc   { color: #9aa5b4; font-style: italic; }
+
+    /* ── SCHEMA BDD ── */
+    .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    .db-table { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .db-table-head {
+      background: var(--dark);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .db-table-head .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
+    .db-table-body { font-size: 12px; }
+    .db-col { padding: 6px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .db-col:last-child { border-bottom: none; }
+    .db-col .col-name { color: var(--text); font-family: monospace; }
+    .db-col .col-type { color: var(--muted); font-family: monospace; font-size: 11px; }
+    .pk { color: var(--orange) !important; font-weight: 700; }
+    .fk { color: var(--blue) !important; }
+
+    /* ── ALGO ── */
+    .algo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    .algo-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      text-align: center;
+    }
+    .algo-pct { font-size: 28px; font-weight: 700; color: var(--blue); }
+    .algo-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .algo-formula {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    /* ── DEPLOY STEPS ── */
+    .steps { counter-reset: step; }
+    .step-item {
+      display: flex;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-item:last-child { border-bottom: none; }
+    .step-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .step-content h4 { font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 4px; }
+    .step-content p  { font-size: 13px; margin-bottom: 6px; }
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      background: #f0f2f5;
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--dark);
+    }
+    pre {
+      font-family: 'Courier New', monospace;
+      font-size: 12.5px;
+      background: var(--dark);
+      color: #e2e8f0;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      margin-top: 8px;
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    pre .cmd  { color: #79c0ff; }
+    pre .cmt  { color: #6a737d; }
+
+    /* ── ERRORS TABLE ── */
+    .error-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .error-table th { background: var(--bg); color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    .error-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .error-table tr:last-child td { border-bottom: none; }
+    .error-code { font-family: monospace; font-size: 12px; color: #c0392b; }
+
+    /* ── LIMITES ── */
+    .limit-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .limit-item:last-child { border-bottom: none; }
+    .limit-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); margin-top: 8px; flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      margin-top: 40px;
+    }
+    footer strong { color: rgba(255,255,255,0.75); }
+
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    @media print {
+      nav { display: none; }
+      .section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="logo-wrap">
+      <span class="logo-ifri">IFRI</span>
+      <span class="logo-mentor">Mentor</span><span class="logo-link">Link</span>
+    </div>
+    <h1>Rapport de Projet Intégrateur — PIL1 2025‑2026</h1>
+    <div class="header-meta">
+      <span><strong>Groupe 23</strong></span>
+      <span><strong>Date :</strong> 10 juin 2026</span>
+      <span><strong>Dépôt :</strong> PIL1_2526_23</span>
+      <span><strong>Université :</strong> UAC / IFRI</span>
+    </div>
+  </div>
+</header>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="container">
+    <ul>
+      <li><a href="#introduction" class="active">Introduction</a></li>
+      <li><a href="#organisation">Organisation</a></li>
+      <li><a href="#conception">Conception</a></li>
+      <li><a href="#deploiement">Déploiement</a></li>
+      <li><a href="#manuel">Manuel</a></li>
+      <li><a href="#conclusion">Conclusion</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- 1. INTRODUCTION -->
+  <div class="section" id="introduction">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>Introduction</h2>
+    </div>
+    <div class="section-body">
+      <p>
+        Ce rapport présente la conception et la réalisation de l'application web <strong>IFRI MentorLink</strong>,
+        développée dans le cadre du projet intégrateur de première année de Licence à l'Institut de Formation
+        et de Recherche en Informatique (IFRI) de l'Université d'Abomey-Calavi.
+      </p>
+      <p>
+        La plateforme a pour objectif de mettre en relation les étudiants de l'IFRI souhaitant offrir ou
+        bénéficier d'un accompagnement académique et professionnel. Chaque utilisateur crée un profil
+        déclarant ses compétences maîtrisées et ses lacunes, renseigne ses disponibilités horaires, et
+        peut publier ou consulter des offres et demandes de mentorat. Un algorithme de matching calcule
+        automatiquement un score de compatibilité entre mentor et mentoré, et une messagerie intégrée
+        permet d'organiser les séances.
+      </p>
+      <p>
+        Ce document couvre le fonctionnement interne de l'équipe, les choix de conception technique,
+        les instructions de déploiement et le manuel d'utilisation de l'application.
+      </p>
+    </div>
+  </div>
+
+  <!-- 2. ORGANISATION -->
+  <div class="section" id="organisation">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>Organisation et fonctionnement du groupe</h2>
+    </div>
+    <div class="section-body">
+
+      <h3>2.1 Démarche suivie</h3>
+      <p>Le développement a suivi une démarche itérative articulée en quatre phases :</p>
+      <ol class="list">
+        <li><strong>Analyse des besoins</strong> — lecture et décomposition du cahier des charges en modules fonctionnels prioritaires (authentification, profil, matching, messagerie).</li>
+        <li><strong>Conception</strong> — modélisation de la base de données relationnelle et définition de l'architecture client-serveur.</li>
+        <li><strong>Développement</strong> — répartition des tâches par modules et mise en place du dépôt Git commun pour le travail collaboratif.</li>
+        <li><strong>Intégration et tests</strong> — assemblage des composants frontend et backend, correction des erreurs et validation globale de l'application.</li>
+      </ol>
+
+      <hr class="divider" />
+
+      <h3>2.2 Composition du groupe et répartition des rôles</h3>
+      <p>Le Groupe 23 est composé de sept étudiants issus de filières différentes, ce qui a permis une complémentarité technique tout au long du projet.</p>
+
+      <table class="members-table">
+        <thead>
+          <tr>
+            <th>Nom et prénoms</th>
+            <th>Filière</th>
+            <th>Rôle organisationnel</th>
+            <th>Contribution technique</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ELEGBEDE Agbachi Trésor Nelky</strong></td>
+            <td><span class="badge badge-gray">SI</span></td>
+            <td><span class="role-badge">Modérateur</span></td>
+            <td>Développement du backend Flask, architecture globale du projet</td>
+          </tr>
+          <tr>
+            <td><strong>DEGBEY Aristide Fulbert</strong></td>
+            <td><span class="badge badge-gray">SI</span></td>
+            <td><span class="role-badge">Porte-parole</span></td>
+            <td>Conception et modélisation de la base de données SQL</td>
+          </tr>
+          <tr>
+            <td><strong>AGBOHOUTO Degnon Gaïus Luther</strong></td>
+            <td><span class="badge badge-gray">IA</span></td>
+            <td><span class="role-badge">Gardien du temps</span></td>
+            <td>Algorithme de matching, intégration des composants</td>
+          </tr>
+          <tr>
+            <td><strong>MAKIERI BOHO Faaris</strong></td>
+            <td><span class="badge badge-gray">GL</span></td>
+            <td><span class="role-badge">Développeur</span></td>
+            <td>Frontend : pages accueil, inscription, connexion, matching et profil</td>
+          </tr>
+          <tr>
+            <td><strong>AGBADJA Pharrell Mawugnon</strong></td>
+            <td><span class="badge badge-gray">SE&IoT</span></td>
+            <td><span class="role-badge">Développeur</span></td>
+            <td>Base de données SQL, déploiement et rédaction de la documentation</td>
+          </tr>
+          <tr>
+            <td><strong>QUENUM Amen Owolabi Jr</strong></td>
+            <td><span class="badge badge-gray">IM</span></td>
+            <td><span class="role-badge">Développeur</span></td>
+            <td>Frontend : interface de messagerie et landing page</td>
+          </tr>
+          <tr>
+            <td><strong>MIDAHUEN Prince Magloire</strong></td>
+            <td><span class="badge badge-gray">GL</span></td>
+            <td><span class="role-badge">Développeur</span></td>
+            <td>Tests, intégration frontend/backend</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:14px;">
+        Le code source a été versionné sur GitHub via Git. Chaque membre a effectué des commits
+        réguliers sur le dépôt commun <code>PIL1_2526_23</code>, permettant de tracer l'historique
+        des contributions et de gérer les conflits lors des fusions de branches.
+      </p>
+    </div>
+  </div>
+
+  <!-- 3. CONCEPTION -->
+  <div class="section" id="conception">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>Conception technique</h2>
+    </div>
+    <div class="section-body">
+
+      <h3>3.1 Architecture du projet</h3>
+      <p>
+        L'application adopte une architecture <strong>client-serveur</strong> classique. Le navigateur
+        envoie des requêtes HTTP au serveur Flask, qui traite la logique métier, interroge la base de
+        données MySQL via SQLAlchemy, et retourne les pages HTML générées par le moteur de templates Jinja2.
+        La messagerie utilise Flask-SocketIO pour les échanges en temps réel.
+      </p>
+
+      <h3>3.2 Structure des fichiers</h3>
+      <div class="tree">
+        <div><span class="folder">PIL1_2526_23/</span></div>
+        <div>&nbsp;&nbsp;├── <span class="folder">routes/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># Logique des routes par module</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file">auth.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># Inscription, connexion, déconnexion</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file">profil.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># Dashboard et gestion du profil</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file">matching.py</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># Calcul et affichage des matchs</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="file">messages.py</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># Conversations et messagerie</span></div>
+        <div>&nbsp;&nbsp;├── <span class="folder">templates/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># Pages HTML (Jinja2)</span></div>
+        <div>&nbsp;&nbsp;├── <span class="folder">static/</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># CSS, JavaScript, images</span></div>
+        <div>&nbsp;&nbsp;├── <span class="file">app.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># Point d'entrée Flask</span></div>
+        <div>&nbsp;&nbsp;├── <span class="file">models.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># Modèles SQLAlchemy</span></div>
+        <div>&nbsp;&nbsp;├── <span class="file">algo_matching.py</span>&nbsp;&nbsp;&nbsp;<span class="desc"># Algorithme de mise en correspondance</span></div>
+        <div>&nbsp;&nbsp;├── <span class="file">schema.sql</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># Script d'initialisation MySQL</span></div>
+        <div>&nbsp;&nbsp;├── <span class="file">requirements.txt</span>&nbsp;&nbsp;&nbsp;<span class="desc"># Dépendances Python</span></div>
+        <div>&nbsp;&nbsp;└── <span class="file">.env.example</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="desc"># Modèle de configuration</span></div>
+      </div>
+
+      <hr class="divider" />
+
+      <h3>3.3 Modélisation de la base de données</h3>
+      <p>
+        La base de données MySQL est organisée autour de sept tables reliées par des clés étrangères.
+        Les contraintes d'unicité garantissent l'intégrité des données (un seul compte par email et
+        par numéro de téléphone, une seule paire mentor-mentoré par match).
+      </p>
+
+      <div class="db-grid">
+        <div class="db-table">
+          <div class="db-table-head"><div class="dot"></div>users</div>
+          <div class="db-table-body">
+            <div class="db-col"><span class="col-name pk">id</span><span class="col-type">INT PK</span></div>
+            <div class="db-col"><span class="col-name">nom, prenom</span><span class="col-type">VARCHAR</span></div>
+            <div class="db-col"><span class="col-name">email</span><span class="col-type">UNIQUE</span></div>
+            <div class="db-col"><span class="col-name">telephone</span><span class="col-type">UNIQUE</span></div>
+            <div class="db-col"><span class="col-name">mot_de_passe</span><span class="col-type">HASH</span></div>
+            <div class="db-col"><span class="col-name">filiere, niveau</span><span class="col-type">ENUM</span></div>
+            <div class="db-col"><span class="col-name">bio, photo_profil</span><span class="col-type">TEXT</span></div>
+          </div>
+        </div>
+        <div class="db-table">
+          <div class="db-table-head"><div class="dot"></div>competences</div>
+          <div class="db-table-body">
+            <div class="db-col"><span class="col-name pk">id</span><span class="col-type">INT PK</span></div>
+            <div class="db-col"><span class="col-name">nom</span><span class="col-type">UNIQUE</span></div>
+            <div class="db-col"><span class="col-name">categorie</span><span class="col-type">VARCHAR</span></div>
+          </div>
+        </div>
+        <div class="db-table">
+          <div class="db-table-head"><div class="dot"></div>user_competences</div>
+          <div class="db-table-body">
+            <div class="db-col"><span class="col-name fk">user_id</span><span class="col-type">FK</span></div>
+            <div class="db-col"><span class="col-name fk">competence_id</span><span class="col-type">FK</span></div>
+            <div class="db-col"><span class="col-name">type</span><span class="col-type">maitrise / lacune</span></div>
+          </div>
+        </div>
+        <div class="db-table">
+          <div class="db-table-head"><div class="dot"></div>disponibilites</div>
+          <div class="db-table-body">
+            <div class="db-col"><span class="col-name fk">user_id</span><span class="col-type">FK</span></div>
+            <div class="db-col"><span class="col-name">jour</span><span class="col-type">ENUM</span></div>
+            <div class="db-col"><span class="col-name">heure_debut</span><span class="col-type">TIME</span></div>
+            <div class="db-col"><span class="col-name">heure_fin</span><span class="col-type">TIME</span></div>
+          </div>
+        </div>
+        <div class="db-table">
+          <div class="db-table-head"><div class="dot"></div>offres_mentorat</div>
+          <div class="db-table-body">
+            <div class="db-col"><span class="col-name fk">user_id</span><span class="col-type">FK</span></div>
+            <div class="db-col"><span class="col-name">type_offre</span><span class="col-type">offre / demande</span></div>
+            <div class="db-col"><span class="col-name fk">competence_id</span><span class="col-type">FK</span></div>
+            <div class="db-col"><span class="col-name">format</span><span class="col-type">ENUM</span></div>
+          </div>
+        </div>
+        <div class="db-table">
+          <div class="db-table-head"><div class="dot"></div>matchs</div>
+          <div class="db-table-body">
+            <div class="db-col"><span class="col-name fk">mentor_id</span><span class="col-type">FK</span></div>
+            <div class="db-col"><span class="col-name fk">mentore_id</span><span class="col-type">FK</span></div>
+            <div class="db-col"><span class="col-name">score</span><span class="col-type">DECIMAL</span></div>
+            <div class="db-col"><span class="col-name">statut</span><span class="col-type">ENUM</span></div>
+          </div>
+        </div>
+        <div class="db-table">
+          <div class="db-table-head"><div class="dot"></div>conversations / messages</div>
+          <div class="db-table-body">
+            <div class="db-col"><span class="col-name fk">user1_id, user2_id</span><span class="col-type">FK</span></div>
+            <div class="db-col"><span class="col-name fk">conversation_id</span><span class="col-type">FK</span></div>
+            <div class="db-col"><span class="col-name">contenu</span><span class="col-type">TEXT</span></div>
+            <div class="db-col"><span class="col-name">lu</span><span class="col-type">BOOLEAN</span></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <h3>3.4 Algorithme de matching</h3>
+      <p>
+        L'algorithme calcule un score de compatibilité entre 0 et 100 pour chaque paire mentor-mentoré
+        potentielle, en combinant trois critères pondérés :
+      </p>
+
+      <div class="algo-grid">
+        <div class="algo-card">
+          <div class="algo-pct">50%</div>
+          <div class="algo-label">Compatibilité des compétences</div>
+          <p style="font-size:12px;color:#7a8599;margin-top:6px;">Ratio des lacunes du mentoré couvertes par les compétences maîtrisées du mentor.</p>
+        </div>
+        <div class="algo-card">
+          <div class="algo-pct">30%</div>
+          <div class="algo-label">Proximité de filière</div>
+          <p style="font-size:12px;color:#7a8599;margin-top:6px;">Score issu d'une matrice de proximité entre les 5 filières de l'IFRI.</p>
+        </div>
+        <div class="algo-card">
+          <div class="algo-pct">20%</div>
+          <div class="algo-label">Compatibilité horaire</div>
+          <p style="font-size:12px;color:#7a8599;margin-top:6px;">Ratio des créneaux horaires communs sur l'union des disponibilités des deux étudiants.</p>
+        </div>
+      </div>
+
+      <div class="algo-formula">
+        Score = (0.50 × score_compétences) + (0.30 × score_filière) + (0.20 × score_horaires)
+      </div>
+
+      <p style="margin-top:12px;">
+        La matrice de proximité entre filières permet d'attribuer un score partiel même lorsque
+        les deux étudiants ne sont pas dans la même filière — par exemple, GL et SI obtiennent
+        un score de 0.7, tandis que GL et SE&IoT obtiennent 0.4.
+        Les dix meilleurs résultats sont retournés, triés par score décroissant.
+      </p>
+
+    </div>
+  </div>
+
+  <!-- 4. DEPLOIEMENT -->
+  <div class="section" id="deploiement">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Instructions de déploiement</h2>
+    </div>
+    <div class="section-body">
+
+      <h3>4.1 Prérequis</h3>
+      <p>Les outils suivants doivent être installés avant de commencer :</p>
+      <ul class="list">
+        <li><strong>Python 3.11</strong> — <em>Attention : Python 3.13 n'est pas compatible avec ce projet.</em></li>
+        <li><strong>XAMPP</strong> — pour le serveur MySQL local.</li>
+        <li><strong>Git</strong> — pour cloner le dépôt.</li>
+      </ul>
+
+      <hr class="divider" />
+
+      <h3>4.2 Étapes d'installation</h3>
+      <div class="steps">
+
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Cloner le dépôt</h4>
+            <pre><span class="cmd">git clone</span> https://github.com/tresornelky00-cloud/PIL1_2526_23.git
+<span class="cmd">cd</span> PIL1_2526_23</pre>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Créer et activer l'environnement virtuel</h4>
+            <pre><span class="cmd">python -m venv</span> venv
+venv\Scripts\activate  <span class="cmt"># Windows</span>
+source venv/bin/activate  <span class="cmt"># Linux / Mac</span></pre>
+            <p>Le préfixe <code>(venv)</code> doit apparaître dans le terminal.</p>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Installer les dépendances</h4>
+            <pre><span class="cmd">pip install</span> -r requirements.txt</pre>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Initialiser la base de données</h4>
+            <p>Lancer XAMPP et démarrer Apache et MySQL, puis :</p>
+            <pre>mysql -u root -p &lt; schema.sql  <span class="cmt"># Appuyer sur Entrée si pas de mot de passe</span></pre>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h4>Configurer le fichier .env</h4>
+            <pre>echo SECRET_KEY=ifri-mentorlink-secret &gt; .env
+echo DATABASE_URL=mysql+pymysql://root:@localhost/ifri_mentorlink &gt;&gt; .env</pre>
+            <p>Si MySQL a un mot de passe, remplacer <code>root:</code> par <code>root:VOTRE_MOT_DE_PASSE</code>.</p>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <h4>Lancer l'application</h4>
+            <pre><span class="cmd">python</span> app.py</pre>
+            <p>Le serveur démarre sur <code>http://127.0.0.1:5000</code>.</p>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">7</div>
+          <div class="step-content">
+            <h4>Ouvrir dans le navigateur</h4>
+            <p>Accéder à <code>http://localhost:5000</code> pour afficher la page d'accueil.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <hr class="divider" />
+
+      <h3>4.3 Résolution des erreurs courantes</h3>
+      <table class="error-table">
+        <thead>
+          <tr><th>Erreur</th><th>Cause</th><th>Solution</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="error-code">SystemError: non-string / ssl</td>
+            <td>Python 3.13 détecté</td>
+            <td>Désinstaller Python 3.13 et installer Python 3.11</td>
+          </tr>
+          <tr>
+            <td class="error-code">ModuleNotFoundError: pymysql</td>
+            <td>Dépendances manquantes</td>
+            <td>Relancer <code>pip install -r requirements.txt</code></td>
+          </tr>
+          <tr>
+            <td class="error-code">RuntimeError: SQLALCHEMY_DATABASE_URI</td>
+            <td>Fichier .env absent ou mal configuré</td>
+            <td>Vérifier la présence et le contenu du fichier <code>.env</code></td>
+          </tr>
+          <tr>
+            <td class="error-code">Can't open file app.py</td>
+            <td>Mauvais répertoire de travail</td>
+            <td>Exécuter <code>cd PIL1_2526_23</code> puis relancer</td>
+          </tr>
+          <tr>
+            <td class="error-code">Access denied for user root</td>
+            <td>Mot de passe MySQL non renseigné</td>
+            <td>Ajouter le mot de passe dans la variable <code>DATABASE_URL</code> du <code>.env</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <!-- 5. MANUEL -->
+  <div class="section" id="manuel">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>Manuel d'utilisation</h2>
+    </div>
+    <div class="section-body">
+
+      <h3>5.1 Création de compte</h3>
+      <p>
+        Depuis la page d'accueil, cliquer sur <strong>S'inscrire</strong>. Renseigner les informations
+        personnelles (nom, prénom, adresse e-mail, numéro de téléphone, filière, niveau), déclarer ses
+        compétences maîtrisées et ses lacunes, puis ses disponibilités horaires habituelles. Le système
+        vérifie automatiquement l'unicité de l'adresse e-mail et du numéro de téléphone.
+      </p>
+
+      <h3>5.2 Connexion</h3>
+      <p>
+        Sur la page de connexion, saisir l'adresse e-mail <strong>ou</strong> le numéro de téléphone
+        avec le mot de passe. En cas d'erreur, un message indique l'identifiant ou le mot de passe
+        incorrect sans préciser lequel des deux est faux, pour des raisons de sécurité.
+      </p>
+
+      <h3>5.3 Profil utilisateur</h3>
+      <p>
+        Depuis le tableau de bord, accéder à la section <strong>Profil</strong> pour consulter ou
+        modifier ses informations, mettre à jour ses compétences et disponibilités, ou ajouter une
+        biographie courte.
+      </p>
+
+      <h3>5.4 Matching</h3>
+      <p>
+        La section <strong>Matching</strong> affiche la liste des mentors ou mentorés les plus
+        compatibles, avec leur score de compatibilité, leurs compétences en commun et leurs
+        disponibilités. Cliquer sur <strong>Contacter</strong> pour ouvrir une conversation directe.
+      </p>
+
+      <h3>5.5 Offres et demandes</h3>
+      <p>
+        La section <strong>Offres</strong> permet de publier une offre de mentorat (mentor proposant
+        ses compétences) ou une demande (étudiant cherchant de l'aide), en précisant la matière
+        concernée, le format (présentiel, en ligne, les deux) et une description optionnelle.
+        Il est aussi possible de parcourir les offres publiées par les autres étudiants et d'y répondre.
+      </p>
+
+      <h3>5.6 Messagerie</h3>
+      <p>
+        La messagerie intégrée permet d'envoyer et recevoir des messages textuels en temps réel
+        grâce à Flask-SocketIO. L'historique des conversations est conservé et accessible depuis
+        la section <strong>Messages</strong>. Les messages non lus sont indiqués par un compteur
+        sur l'icône de notification.
+      </p>
+
+      <h3>5.7 Déconnexion</h3>
+      <p>
+        Cliquer sur <strong>Déconnexion</strong> dans la barre de navigation pour fermer la session
+        en toute sécurité.
+      </p>
+
+    </div>
+  </div>
+
+  <!-- 6. CONCLUSION -->
+  <div class="section" id="conclusion">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>Conclusion</h2>
+    </div>
+    <div class="section-body">
+      <p>
+        Ce projet a permis de mettre en pratique les compétences acquises au cours de la première
+        année de Licence à l'IFRI : développement web avec Flask et Jinja2, modélisation et
+        manipulation de bases de données relationnelles avec MySQL et SQLAlchemy, et gestion
+        collaborative du code source avec Git et GitHub.
+      </p>
+      <p>
+        L'application <strong>IFRI MentorLink</strong> répond aux exigences fonctionnelles
+        principales du cahier des charges — gestion des comptes, matching automatique et messagerie
+        intégrée — et constitue une base solide pouvant être étendue dans le cadre de projets futurs.
+      </p>
+      <p>
+        Ce projet a également renforcé notre capacité à travailler en équipe sur un problème
+        complexe, à nous répartir les tâches efficacement et à livrer un produit fonctionnel
+        dans un délai contraint.
+      </p>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  <strong>IFRI MentorLink</strong> — Groupe 23 — Projet Intégrateur PIL1 2025‑2026<br>
+  Université d'Abomey-Calavi · Institut de Formation et de Recherche en Informatique
+</footer>
+
+<script>
+  // Navigation active au scroll
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>
