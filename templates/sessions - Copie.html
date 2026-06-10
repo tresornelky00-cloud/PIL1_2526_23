@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFRI MentorLink — Sessions</title>
+    <link rel="stylesheet" href="sessions.css">
+    <link rel="icon" href="Logo Ifri Mentor Link.jpg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+<!-- ══════════════════ HEADER ══════════════════ -->
+<header class="main-header">
+    <div class="logo-text">IFRI <span>MentorLink</span></div>
+    <div class="header-profile">
+        <div class="header-avatar">KA</div>
+        <span class="header-username">Koffi A.</span>
+    </div>
+</header>
+
+<!-- Ligne tricolore IFRI -->
+<div class="triband">
+    <div class="band-blue"></div>
+    <div class="band-green"></div>
+    <div class="band-orange"></div>
+</div>
+
+<!-- ══════════════════ LAYOUT ══════════════════ -->
+<div class="main-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-user-card">
+            <div class="sidebar-avatar">KA</div>
+            <h3 class="sidebar-user-name">Koffi Adannou</h3>
+            <p class="sidebar-user-class">L2 — IA</p>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">
+                <i class="bi bi-house-door-fill"></i> Accueil
+            </a>
+            <a href="profil.html" class="menu-item">
+                <i class="bi bi-person-fill"></i> Mon profil
+            </a>
+            <a href="#" class="menu-item">
+                <i class="bi bi-person-lines-fill"></i> Matching
+            </a>
+            <a href="#" class="menu-item">
+                <i class="bi bi-chat-left-text-fill"></i> Messages
+            </a>
+            <a href="sessions.html" class="menu-item active">
+                <i class="bi bi-calendar-event-fill"></i> Sessions
+            </a>
+            <a href="#" class="menu-item">
+                <i class="bi bi-gear-fill"></i> Paramètres
+            </a>
+            <a href="connexion.html" class="menu-item logout">
+                <i class="bi bi-box-arrow-left"></i> Déconnexion
+            </a>
+        </nav>
+    </aside>
+
+    <!-- CONTENU -->
+    <main class="content-area">
+
+        <div class="page-header">
+            <h2>Mes Sessions <i class="bi bi-calendar-event-fill" style="color:var(--ifri-blue);font-size:20px;"></i></h2>
+            <p>Mardi 9 juin 2026</p>
+        </div>
+
+        <!-- CALENDRIER -->
+        <div class="calendar-card">
+            <h3>Juin 2026</h3>
+            <div class="calendar-grid">
+                <!-- En-têtes jours -->
+                <div class="cal-header">L</div>
+                <div class="cal-header">M</div>
+                <div class="cal-header">M</div>
+                <div class="cal-header">J</div>
+                <div class="cal-header">V</div>
+                <div class="cal-header">S</div>
+                <div class="cal-header">D</div>
+
+                <!-- Semaine 1 -->
+                <div class="cal-day">2</div>
+                <div class="cal-day">3</div>
+                <div class="cal-day">4</div>
+                <div class="cal-day">5</div>
+                <div class="cal-day">6</div>
+                <div class="cal-day">7</div>
+                <div class="cal-day has-event-dark">8</div>
+
+                <!-- Semaine 2 -->
+                <div class="cal-day has-event-light">9</div>
+                <div class="cal-day">10</div>
+                <div class="cal-day">11</div>
+                <div class="cal-day has-event-light">12</div>
+                <div class="cal-day">13</div>
+                <div class="cal-day">14</div>
+                <div class="cal-day">15</div>
+            </div>
+        </div>
+
+        <!-- SESSIONS À VENIR -->
+        <h3 class="section-title">Sessions à venir</h3>
+
+        <!-- Carte 1 -->
+        <div class="session-card">
+            <div class="session-left">
+                <div class="session-avatar avatar-orange">FA</div>
+                <div class="session-info">
+                    <h4>Fatoumata Alabi</h4>
+                    <div class="session-meta">
+                        <span class="session-badge badge-subject">Algorithmique</span>
+                        <span class="session-date"><i class="bi bi-calendar3"></i> Mar 9 juin &nbsp;·&nbsp; 14h–16h</span>
+                        <span class="badge-online"><i class="bi bi-camera-video"></i> En ligne</span>
+                    </div>
+                </div>
+            </div>
+            <div class="session-actions">
+                <button class="btn-join"><i class="bi bi-camera-video-fill"></i> Rejoindre</button>
+                <button class="btn-cancel">Annuler</button>
+            </div>
+        </div>
+
+        <!-- Carte 2 -->
+        <div class="session-card">
+            <div class="session-left">
+                <div class="session-avatar avatar-green">AC</div>
+                <div class="session-info">
+                    <h4>Amina Cissé</h4>
+                    <div class="session-meta">
+                        <span class="session-badge badge-subject">SQL</span>
+                        <span class="session-date"><i class="bi bi-calendar3"></i> Sam 12 juin &nbsp;·&nbsp; 10h–12h</span>
+                        <span class="badge-offline"><i class="bi bi-geo-alt"></i> Présentiel</span>
+                    </div>
+                </div>
+            </div>
+            <div class="session-actions">
+                <button class="btn-confirm"><i class="bi bi-check-circle-fill"></i> Confirmer</button>
+                <button class="btn-cancel">Annuler</button>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+</body>
+</html>

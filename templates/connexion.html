@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="Logo Ifri Mentor Link.jpg">
+
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'inscription</title>
+    <link rel="stylesheet" href="insc3.css">
+    <link rel="icon" href="Logo Ifri Mentor Link.jpg">
+</head>
+<body>
+    <div class="bg-watermark">IFRI</div>
+
+    <div class="login-card">
+        <div class="card-header">
+            <div class="logo-text">IFRI <span>MentorLink</span></div>
+        </div>
+        
+        <div class="triband">
+            <div class="band-blue"></div>
+            <div class="band-green"></div>
+            <div class="band-orange"></div>
+        </div>
+
+        <div class="card-body">
+            <h2 class="card-title">Se connecter</h2>
+
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="identifier">Adresse email ou Numéro de téléphone</label>
+                    <input type="text" id="identifier" class="input-field" required placeholder="exemple@ifri.uac.bj ou 01XXXXXXXX">
+                    <div class="error-message" id="identifierError">Veuillez entrer un email valide ou un numéro à 10 chiffres commençant par 01.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mot de passe (Maximum 6 caractères)</label>
+                    <input type="password" id="password" class="input-field" required maxlength="6" placeholder="Saisissez votre mot de passe">
+                    <div class="error-message">Le mot de passe est obligatoire (6 caractères maximum).</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="securityCode">Code unique (Maximum 6 caractères)</label>
+                    <input type="text" id="securityCode" class="input-field" required maxlength="6" placeholder="Saisissez votre code unique">
+                    <div class="error-message">Le code de sécurité est obligatoire (6 caractères maximum).</div>
+                </div>
+
+                <div class="form-options">
+                    <div></div>
+                    <a class="forgot-password" onclick="toggleModal(true)">Mot de passe oublié ?</a>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>Connection...</span>
+                </button>
+            </form>
+
+            <div class="card-footer">
+                Pas de compte ? <a href="insc3.html">Créez un nouveau compte</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="forgotModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 12px; color: var(--dark);">Récupération de compte</h3>
+            <p style="font-size: 12px; color: #546E7A; margin-bottom: 16px;">Veuillez renseigner votre adresse email pour recevoir un lien de réinitialisation.</p>
+            <div class="form-group" id="modalGroup">
+                <label>Votre adresse email</label>
+                <input type="email" id="forgotEmail" class="input-field" placeholder="exemple@ifri.uac.bj">
+                <div class="error-message">Veuillez indiquer une adresse email institutionnelle ou personnelle valide.</div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="toggleModal(false)">Annuler</button>
+                <button type="button" class="btn-submit" style="flex: 2; padding: 10px;" onclick="submitForgotPassword()">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="connexion.js"></script>
+       
+</body>
+</html>
+    
+
+   
+
+    </header>
+</body>
+</html>

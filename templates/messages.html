@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Messages — MentorLink{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>Mes conversations</h2>
+</div>
+
+{% if conversations %}
+  <div class="conv-list">
+    {% for item in conversations %}
+    <a class="conv-item" href="{{ url_for('messages.ouvrir_conversation', user_id=item.interlocuteur.id) }}">
+      <div class="conv-avatar">
+        {{ item.interlocuteur.prenom[0] }}{{ item.interlocuteur.nom[0] }}
+      </div>
+      <div class="conv-info">
+        <div class="conv-name">{{ item.interlocuteur.prenom }} {{ item.interlocuteur.nom }}</div>
+        <div class="conv-preview">
+          {% if item.dernier_msg %}
+            {{ item.dernier_msg.contenu[:60] }}{% if item.dernier_msg.contenu | length > 60 %}…{% endif %}
+          {% else %}
+            Démarrez la conversation
+          {% endif %}
+        </div>
+      </div>
+      <div class="conv-meta">
+        {% if item.dernier_msg %}
+          <span class="conv-time">{{ item.dernier_msg.date_envoi.strftime('%d/%m %H:%M') }}</span>
+        {% endif %}
+        {% if item.non_lus > 0 %}
+          <span class="unread-badge">{{ item.non_lus }}</span>
+        {% endif %}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state-box">
+    <p>Aucune conversation pour l'instant.</p>
+    <p>Utilisez le <a href="{{ url_for('matching.index') }}">matching</a> pour contacter un mentor.</p>
+  </div>
+{% endif %}
+{% endblock %}

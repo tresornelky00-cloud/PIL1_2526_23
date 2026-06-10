@@ -1,0 +1,379 @@
+/* ==========================================================================
+           1. CHARTE GRAPHIQUE & CONFIGURATION GLOBALE (Harmonisation IFRI)
+           ========================================================================== */
+        :root {
+            --ifri-blue: #1565C0;
+            --ifri-green: #2E7D32;
+            --ifri-orange: #E65100;
+            --dark-navy: #1A1A2E;
+            --bg-light: #F5F7FA;
+            --white: #ffffff;
+            --text-dark: #333333;
+            --text-muted: #546E7A;
+            --border-color: #E4E8F0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ==========================================================================
+           2. BARRE SUPÉRIEURE (HEADER HARMONISÉ)
+           ========================================================================== */
+        .main-header {
+            height: 70px;
+            background-color: var(--dark-navy); /* Fond sombre identique aux autres pages */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            position: relative;
+        }
+
+        .logo-text {
+            color: var(--white);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text span {
+            color: var(--ifri-orange);
+        }
+
+        .header-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-username {
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        /* La ligne tricolore distinctive de l'IFRI */
+        .triband {
+            height: 4px;
+            display: flex;
+            width: 100%;
+        }
+        .band-blue { background: var(--ifri-blue); flex: 1; }
+        .band-green { background: var(--ifri-green); flex: 1; }
+        .band-orange { background: var(--ifri-orange); flex: 1; }
+
+        /* ==========================================================================
+           3. STRUCTURE DU CONTENEUR PRINCIPAL (SIDEBAR + CONTENT)
+           ========================================================================== */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* --- STYLE DE LA BARRE LATÉRALE (SIDEBAR) --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--white);
+            border-right: 1px solid var(--border-color);
+            padding: 30px 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .sidebar-user-card {
+            text-align: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-x: 15px;
+        }
+
+        .sidebar-avatar {
+            width: 70px;
+            height: 70px;
+            background-color: #E8F5E9; /* Teinte verte douce */
+            color: var(--ifri-green);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 12px auto;
+            border: 1px solid rgba(46, 125, 50, 0.2);
+        }
+
+        .sidebar-user-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .sidebar-user-class {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: #ECEFF1;
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+
+        .sidebar-menu {
+            margin-top: 25px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 25px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            gap: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item i {
+            font-size: 18px;
+        }
+
+        /* Onglet actif adapté au bleu de la charte */
+        .menu-item.active {
+            background-color: #E3F2FD;
+            color: var(--ifri-blue);
+            border-left: 4px solid var(--ifri-blue);
+            padding-left: 21px;
+        }
+
+        .menu-item:hover:not(.active) {
+            background-color: var(--bg-light);
+            color: var(--ifri-blue);
+        }
+
+        /* Deconnexion en rouge en bas de menu (optionnel mais propre) */
+        .menu-item.logout {
+            color: #d32f2f;
+            margin-top: 50px;
+        }
+        .menu-item.logout:hover {
+            background-color: #FFEBEE;
+        }
+
+        /* --- ZONE DE CONTENU PRINCIPALE (DROITE) --- */
+        .content-area {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .welcome-section {
+            margin-bottom: 30px;
+        }
+
+        .welcome-section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-navy);
+            margin-bottom: 4px;
+        }
+
+        .current-date {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ==========================================================================
+           4. LA GRILLE DE STATISTIQUES (MODERNE ET HARMONISÉE)
+           ========================================================================== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Correspondance stricte avec les couleurs de la charte */
+        .color-blue { color: var(--ifri-blue); }
+        .color-green { color: var(--ifri-green); }
+        .color-orange { color: var(--ifri-orange); }
+        .color-purple { color: #6A1B9A; }
+
+
+        /* ==========================================================================
+           5. SECTION MATCHES ET RECOMMANDATIONS
+           ========================================================================== */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark-navy);
+            margin-bottom: 20px;
+        }
+
+        .match-item-card {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            transition: box-shadow 0.2s;
+        }
+
+        .match-item-card:hover {
+            box-shadow: 0 6px 16px rgba(21, 101, 192, 0.08);
+        }
+
+        .match-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 700;
+            margin-right: 20px;
+        }
+
+        .bg-peach {
+            background-color: #FFF3E0;
+            color: var(--ifri-orange);
+            border: 1px solid rgba(230, 81, 0, 0.15);
+        }
+
+        .bg-lightgreen {
+            background-color: #E8F5E9;
+            color: var(--ifri-green);
+            border: 1px solid rgba(46, 125, 50, 0.15);
+        }
+
+        .match-details {
+            flex: 1;
+        }
+
+        .match-name {
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .match-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .match-class {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Badges de compétences stylisés comme la page d'inscription */
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-green {
+            background-color: #E8F5E9;
+            color: var(--ifri-green);
+            border: 1px solid rgba(46, 125, 50, 0.2);
+        }
+
+        .badge-blue {
+            background-color: #E3F2FD;
+            color: var(--ifri-blue);
+            border: 1px solid rgba(21, 101, 192, 0.2);
+        }
+
+        /* Action box alignée */
+        .match-action-box {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .match-percentage {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ifri-blue);
+        }
+
+        .btn-contact {
+            background-color: var(--ifri-blue);
+            color: var(--white);
+            border: none;
+            padding: 9px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-contact:hover {
+            background-color: #0D47A1;
+        }

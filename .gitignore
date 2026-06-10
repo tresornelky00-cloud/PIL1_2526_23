@@ -1,0 +1,27 @@
+# Environnement virtuel
+venv/
+env/
+.venv/
+
+# Variables d'environnement (NE JAMAIS COMMIT !)
+.env
+
+# Bytecode Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# Uploads utilisateurs (si applicable)
+static/uploads/

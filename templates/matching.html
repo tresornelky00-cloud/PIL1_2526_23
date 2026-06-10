@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Matching · IFRI MentorLink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --blue: #0080FF;
+      --orange: #FF8000;
+      --white: #FFFFFF;
+      --gray-light: #F4F7FB;
+      --gray-mid: #E2EAF4;
+      --text-dark: #0A1628;
+      --text-mid: #3A4A6B;
+      --text-soft: #7A8BAA;
+      --sidebar-w: 240px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--gray-light);
+      color: var(--text-dark);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--white);
+      border-right: 1.5px solid var(--gray-mid);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 50;
+      padding: 1.5rem 0;
+    }
+    .sidebar-logo {
+      display: flex;
+      flex-direction: column;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: 0 1.5rem 1.5rem;
+      border-bottom: 1.5px solid var(--gray-mid);
+      text-decoration: none;
+      line-height: 1.1;
+    }
+    .sidebar-logo .ifri { color: var(--blue); }
+    .sidebar-logo .mentor {
+      color: var(--white);
+      background: var(--orange);
+      padding: 1px 6px 1px 4px;
+      border-radius: 3px;
+      display: inline-block;
+      margin-top: 2px;
+    }
+    .sidebar-nav { flex: 1; padding: 1rem 0; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-mid);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .nav-item:hover { background: var(--gray-light); color: var(--blue); }
+    .nav-item.active {
+      background: #EAF3FF;
+      color: var(--blue);
+      border-left-color: var(--blue);
+      font-weight: 600;
+    }
+    .nav-item .icon { font-size: 1.1rem; width: 22px; text-align: center; }
+    .notif-badge {
+      margin-left: auto;
+      background: var(--orange);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+    }
+    .sidebar-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1.5px solid var(--gray-mid);
+    }
+    .sidebar-user { display: flex; align-items: center; gap: 0.75rem; }
+    .sidebar-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--orange);
+      color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .sidebar-user-name { font-size: 0.82rem; font-weight: 600; }
+    .sidebar-user-role { font-size: 0.72rem; color: var(--text-soft); }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── TOP NAVBAR ── */
+    .topnav {
+      background: var(--white);
+      border-bottom: 1.5px solid var(--gray-mid);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .topnav-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+    .topnav-right { display: flex; align-items: center; gap: 0.75rem; }
+    .topnav-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      display: flex;
+      flex: 1;
+      gap: 0;
+    }
+
+    /* ── FILTRES ── */
+    .filters-panel {
+      width: 210px;
+      flex-shrink: 0;
+      padding: 1.75rem 1.25rem;
+      background: var(--white);
+      border-right: 1.5px solid var(--gray-mid);
+      min-height: calc(100vh - 64px);
+    }
+    .filters-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-dark);
+    }
+    .filter-group { margin-bottom: 1.25rem; }
+    .filter-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .filter-select {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--gray-mid);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.83rem;
+      color: var(--text-dark);
+      background: var(--white);
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A8BAA' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2rem;
+    }
+    .filter-select:focus { border-color: var(--blue); }
+
+    .filter-check {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      font-size: 0.83rem;
+      color: var(--text-mid);
+    }
+    .filter-check input[type="checkbox"] {
+      width: 15px; height: 15px;
+      accent-color: var(--blue);
+      cursor: pointer;
+    }
+
+    .apply-btn {
+      width: 100%;
+      padding: 0.65rem;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 9px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .apply-btn:hover { background: #006ee0; transform: translateY(-1px); }
+
+    .reset-btn {
+      width: 100%;
+      padding: 0.55rem;
+      background: none;
+      color: var(--text-soft);
+      border: 1.5px solid var(--gray-mid);
+      border-radius: 9px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: all 0.2s;
+    }
+    .reset-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ── RESULTS ── */
+    .results-panel {
+      flex: 1;
+      padding: 1.75rem 2rem;
+      overflow-y: auto;
+    }
+
+    /* Tabs */
+    .tabs-bar {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--gray-mid);
+      margin-bottom: 1.5rem;
+    }
+    .tab {
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.65rem 1.5rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--text-soft);
+      border-bottom: 2.5px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: var(--blue); }
+    .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .tab .count {
+      display: inline-block;
+      background: var(--gray-mid);
+      color: var(--text-mid);
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+    .tab.active .count { background: #EAF3FF; color: var(--blue); }
+
+    /* Search in results */
+    .results-search {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--white);
+      border: 1.5px solid var(--gray-mid);
+      border-radius: 10px;
+      padding: 0.55rem 1rem;
+      margin-bottom: 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .results-search:focus-within { border-color: var(--blue); }
+    .results-search input {
+      border: none; outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-dark);
+      flex: 1;
+      background: none;
+    }
+    .results-search input::placeholder { color: var(--text-soft); }
+
+    /* Cards */
+    .result-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-mid);
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .result-card:hover {
+      box-shadow: 0 6px 24px rgba(0,128,255,0.10);
+      border-color: var(--blue);
+      transform: translateY(-2px);
+    }
+
+    .result-avatar {
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--white);
+      flex-shrink: 0;
+      position: relative;
+    }
+    .online-dot {
+      position: absolute;
+      bottom: 2px; right: 2px;
+      width: 12px; height: 12px;
+      background: #00C853;
+      border-radius: 50%;
+      border: 2px solid var(--white);
+    }
+
+    .result-body { flex: 1; min-width: 0; }
+    .result-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-dark);
+      margin-bottom: 0.2rem;
+    }
+    .result-meta {
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .meta-dot { width: 3px; height: 3px; background: var(--text-soft); border-radius: 50%; }
+
+    .result-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .rtag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+    }
+    .rtag-blue { background: #EAF3FF; color: var(--blue); }
+    .rtag-orange { background: #FFF0E0; color: var(--orange); }
+    .rtag-green { background: #E6F9F0; color: #00A86B; }
+
+    .result-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
+    }
+
+    /* Score circle */
+    .score-circle {
+      position: relative;
+      width: 64px;
+      height: 64px;
+    }
+    .score-circle svg {
+      transform: rotate(-90deg);
+      width: 64px; height: 64px;
+    }
+    .score-circle circle {
+      fill: none;
+      stroke-width: 5;
+      stroke-linecap: round;
+    }
+    .score-circle .bg { stroke: var(--gray-mid); }
+    .score-circle .fg { transition: stroke-dashoffset 1s ease; }
+    .score-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+
+    .result-actions { display: flex; flex-direction: column; gap: 0.4rem; }
+    .btn-demander {
+      padding: 0.45rem 1.1rem;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--blue);
+      color: var(--white);
+      white-space: nowrap;
+    }
+    .btn-demander:hover { background: #006ee0; transform: translateY(-1px); }
+    .btn-profil {
+      padding: 0.4rem 1.1rem;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.78rem;
+      border: 1.5px solid var(--gray-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--white);
+      color: var(--text-mid);
+      white-space: nowrap;
+    }
+    .btn-profil:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* Demande card (different style) */
+    .result-card.demande-card { border-left: 4px solid var(--orange); }
+    .result-card.offre-card { border-left: 4px solid var(--blue); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-soft);
+    }
+    .empty-state .ei { font-size: 3rem; margin-bottom: 1rem; }
+    .empty-state p { font-size: 0.9rem; line-height: 1.6; }
+
+    /* Tab content */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    @media (max-width: 1000px) {
+      .filters-panel { display: none; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .results-panel { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="#">
+      <img src="assets/img/logo.png" alt="Logo IFRI MentorLink" height="160">
+    </a>
+    <nav class="sidebar-nav">
+      <a href="matching.html" class="nav-item active">
+        <span class="icon">🔗</span> Matching
+      </a>
+      <a href="profil.html" class="nav-item">
+        <span class="icon">👤</span> Mon profil
+      </a>
+      <a href="messagerie.html" class="nav-item">
+        <span class="icon">💬</span> Messagerie
+        <span class="notif-badge">3</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="icon">🔔</span> Notifications
+      </a>
+      <a href="#" class="nav-item" style="color:#E53935;">
+        <span class="icon">🚪</span> Déconnexion
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">YD</div>
+        <div>
+          <div class="sidebar-user-name">Yao Dossou</div>
+          <div class="sidebar-user-role">IA · L1</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOP NAV -->
+    <div class="topnav">
+      <div class="topnav-title">🔗 Matching</div>
+      <div class="topnav-right">
+        <div style="font-size:0.82rem;color:var(--text-soft);">Yao Dossou</div>
+        <div class="topnav-avatar">YD</div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- FILTRES -->
+      <div class="filters-panel">
+        <div class="filters-title">🎛️ Filtres</div>
+
+        <div class="filter-group">
+          <label class="filter-label">Filière</label>
+          <select class="filter-select" id="f-filiere">
+            <option>Toutes</option>
+            <option>IA</option>
+            <option>GL</option>
+            <option>IM</option>
+            <option>SE&IoT</option>
+            <option>SI</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Matière</label>
+          <select class="filter-select" id="f-matiere">
+            <option>Toutes</option>
+            <option>Algorithmique</option>
+            <option>Language C</option>
+            <option>Programmation Python</option>
+            <option>SGBD et langage SQL</option>
+            <option>Developpement Web</option>
+            <option>Infographie</option>
+            <option>POO</option>
+            <option>Administration des réseaux sous Windows/Linux</option>
+            <option>Suites et séries numériques</option>
+            <option>Equations différenctielles et calcul intégral</option>
+            <option>Théorie des graphes et applications</option>
+            <option>Recherches opérationnelles et applications</option>
+            <option>Théories des bases de données et algèbre relationnelle</option>
+            <option>Anglais technique</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Niveau</label>
+          <select class="filter-select" id="f-niveau">
+            <option>Tous</option>
+            <option>L1</option>
+            <option>L2</option>
+            <option>L3</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Format</label>
+          <label class="filter-check">
+            <input type="checkbox" checked id="f-presentiel"/> Présentiel
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" checked id="f-enligne"/> En ligne
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Score minimum</label>
+          <select class="filter-select" id="f-score">
+            <option>Tous</option>
+            <option>≥ 50%</option>
+            <option>≥ 70%</option>
+            <option>≥ 90%</option>
+          </select>
+        </div>
+
+        <button class="apply-btn" onclick="applyFilters()">Appliquer</button>
+        <button class="reset-btn" onclick="resetFilters()">Réinitialiser</button>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="results-panel">
+
+        <!-- Search -->
+        <div class="results-search">
+          <span style="color:var(--text-soft);">🔍</span>
+          <input type="text" placeholder="Rechercher par nom, matière, filière…" oninput="searchCards(this.value)"/>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-bar">
+          <button class="tab active" onclick="switchTab('mentors', this)">
+            Mentors <span class="count" id="cnt-mentors">5</span>
+          </button>
+          <button class="tab" onclick="switchTab('demandes', this)">
+            Demandes <span class="count" id="cnt-demandes">3</span>
+          </button>
+          <button class="tab" onclick="switchTab('offres', this)">
+            Mes offres <span class="count" id="cnt-offres">2</span>
+          </button>
+        </div>
+
+        <!-- MENTORS -->
+        <div class="tab-content active" id="tab-mentors">
+
+          <div class="result-card" data-tags="python algorithmique poo gl" data-score="92">
+            <div class="result-avatar" style="background:#0080FF;">
+              FA
+              <div class="online-dot"></div>
+            </div>
+            <div class="result-body">
+              <div class="result-name">Fatoumata Alabi</div>
+              <div class="result-meta">
+                <span>L3</span><div class="meta-dot"></div>
+                <span>GL</span><div class="meta-dot"></div>
+                <span>📅 Lun/Mer 14h–18h</span><div class="meta-dot"></div>
+                <span>🏠 Présentiel & En ligne</span>
+              </div>
+              <div class="result-tags">
+                <span class="rtag rtag-blue">Language Python</span>
+                <span class="rtag rtag-blue">Algorithmique</span>
+              </div>
+            </div>
+            <div class="result-right">
+              <div class="score-circle">
+                <svg viewBox="0 0 64 64">
+                  <circle class="bg" cx="32" cy="32" r="27"/>
+                  <circle class="fg" cx="32" cy="32" r="27"
+                    stroke="#0080FF"
+                    stroke-dasharray="169.6"
+                    stroke-dashoffset="13.6"/>
+                </svg>
+                <div class="score-text" style="color:#0080FF;">92%</div>
+              </div>
+              <div class="result-actions">
+                <button class="btn-demander" onclick="demanderMentorat(this, 'Fatoumata Alabi')">Demander</button>
+                <button class="btn-profil">Profil</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card" data-tags="sql réseaux dev web ia" data-score="78">
+            <div class="result-avatar" style="background:#7C3AED;">
+              AC
+            </div>
+            <div class="result-body">
+              <div class="result-name">Amina Cissé</div>
+              <div class="result-meta">
+                <span>L3</span><div class="meta-dot"></div>
+                <span>IA</span><div class="meta-dot"></div>
+                <span>📅 Mar/Jeu 16h–20h</span><div class="meta-dot"></div>
+                <span>💻 En ligne</span>
+              </div>
+              <div class="result-tags">
+                <span class="rtag rtag-blue">SGBD et langage SQL</span>
+                <span class="rtag rtag-blue"> Lagage Python</span>
+                <span class="rtag rtag-blue">Language C</span>
+              </div>
+            </div>
+            <div class="result-right">
+              <div class="score-circle">
+                <svg viewBox="0 0 64 64">
+                  <circle class="bg" cx="32" cy="32" r="27"/>
+                  <circle class="fg" cx="32" cy="32" r="27"
+                    stroke="#00A86B"
+                    stroke-dasharray="169.6"
+                    stroke-dashoffset="37.3"/>
+                </svg>
+                <div class="score-text" style="color:#00A86B;">78%</div>
+              </div>
+              <div class="result-actions">
+                <button class="btn-demander" onclick="demanderMentorat(this, 'Amina Cissé')">Demander</button>
+                <button class="btn-profil">Profil</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card" data-tags="algorithmique sql python gl" data-score="94">
+            <div class="result-avatar" style="background:#FF8000;">
+              AK
+              <div class="online-dot"></div>
+            </div>
+            <div class="result-body">
+              <div class="result-name">Awa Koné</div>
+              <div class="result-meta">
+                <span>L2</span><div class="meta-dot"></div>
+                <span>GL</span><div class="meta-dot"></div>
+                <span>📅 Mer/Sam 15h–19h</span><div class="meta-dot"></div>
+                <span>🏠 Présentiel & En ligne</span>
+              </div>
+              <div class="result-tags">
+                <span class="rtag rtag-orange">Algorithmique</span>
+                <span class="rtag rtag-orange">SGBD et langageSQL</span>
+                <span class="rtag rtag-orange">Langage Python</span>
+              </div>
+            </div>
+            <div class="result-right">
+              <div class="score-circle">
+                <svg viewBox="0 0 64 64">
+                  <circle class="bg" cx="32" cy="32" r="27"/>
+                  <circle class="fg" cx="32" cy="32" r="27"
+                    stroke="#FF8000"
+                    stroke-dasharray="169.6"
+                    stroke-dashoffset="10.2"/>
+                </svg>
+                <div class="score-text" style="color:#FF8000;">94%</div>
+              </div>
+              <div class="result-actions">
+                <button class="btn-demander" style="background:#FF8000;" onclick="demanderMentorat(this, 'Awa Koné')">Demander</button>
+                <button class="btn-profil">Profil</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card" data-tags="poo java réseaux si" data-score="65">
+            <div class="result-avatar" style="background:#00A86B;">
+              KA
+            </div>
+            <div class="result-body">
+              <div class="result-name">Kofi Asante</div>
+              <div class="result-meta">
+                <span>L2</span><div class="meta-dot"></div>
+                <span>SI</span><div class="meta-dot"></div>
+                <span>📅 Ven 14h–18h</span><div class="meta-dot"></div>
+                <span>🏠 Présentiel</span>
+              </div>
+              <div class="result-tags">
+                <span class="rtag rtag-green">Langage C</span>
+                <span class="rtag rtag-green">Infographie</span>
+              </div>
+            </div>
+            <div class="result-right">
+              <div class="score-circle">
+                <svg viewBox="0 0 64 64">
+                  <circle class="bg" cx="32" cy="32" r="27"/>
+                  <circle class="fg" cx="32" cy="32" r="27"
+                    stroke="#00A86B"
+                    stroke-dasharray="169.6"
+                    stroke-dashoffset="59.4"/>
+                </svg>
+                <div class="score-text" style="color:#00A86B;">65%</div>
+              </div>
+              <div class="result-actions">
+                <button class="btn-demander" style="background:#00A86B;" onclick="demanderMentorat(this, 'Kofi Asante')">Demander</button>
+                <button class="btn-profil">Profil</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card" data-tags="dev web javascript html css im" data-score="85">
+            <div class="result-avatar" style="background:#E53935;">
+              MD
+              <div class="online-dot"></div>
+            </div>
+            <div class="result-body">
+              <div class="result-name">Marie Dansou</div>
+              <div class="result-meta">
+                <span>L2</span><div class="meta-dot"></div>
+                <span>IM</span><div class="meta-dot"></div>
+                <span>📅 Sam/Dim matin</span><div class="meta-dot"></div>
+                <span>💻 En ligne</span>
+              </div>
+              <div class="result-tags">
+                <span class="rtag rtag-blue">Equations différenctielles et calcul intégral</span>
+                <span class="rtag rtag-blue">Suites et séries numeriques</span>
+                <span class="rtag rtag-blue">Developpement web</span>
+              </div>
+            </div>
+            <div class="result-right">
+              <div class="score-circle">
+                <svg viewBox="0 0 64 64">
+                  <circle class="bg" cx="32" cy="32" r="27"/>
+                  <circle class="fg" cx="32" cy="32" r="27"
+                    stroke="#0080FF"
+                    stroke-dasharray="169.6"
+                    stroke-dashoffset="25.4"/>
+                </svg>
+                <div class="score-text" style="color:#0080FF;">85%</div>
+              </div>
+              <div class="result-actions">
+                <button class="btn-demander" onclick="demanderMentorat(this, 'Marie Dansou')">Demander</button>
+                <button class="btn-profil">Profil</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- DEMANDES -->
+        <div class="tab-content" id="tab-demandes">
+
+          <div class="result-card demande-card" data-tags="algorithmique python">
+            <div class="result-avatar" style="background:#E53935;">SB</div>
+            <div class="result-body">
+              <div class="result-name">Ségun Bello</div>
+              <div class="result-meta">
+                <span>L1</span><div class="meta-dot"></div>
+                <span>SE&IoT</span><div class="meta-dot"></div>
+                <span>📅 Lun/Mar 13h–17h</span><div class="meta-dot"></div>
+                <span>🏠 Présentiel</span>
+              </div>
+              <div class="result-tags">
+                <span class="rtag rtag-orange">Besoin en : Algorithmique</span>
+                <span class="rtag rtag-orange">Python</span>
+              </div>
+            </div>
+            <div class="result-right">
+              <div class="score-circle">
+                <svg viewBox="0 0 64 64">
+                  <circle class="bg" cx="32" cy="32" r="27"/>
+                  <circle class="fg" cx="32" cy="32" r="27"
+                    stroke="#FF8000"
+                    stroke-dasharray="169.6"
+                    stroke-dashoffset="27.1"/>
+                </svg>
+                <div class="score-text" style="color:#FF8000;">84%</div>
+              </div>
+              <div class="result-actions">
+                <button class="btn-demander" style="background:#FF8000;">Proposer</button>
+                <button class="btn-profil">Profil</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card demande-card" data-tags="sql bases de données">
+            <div class="result-avatar" style="background:#7C3AED;">LT</div>
+            <div class="result-body">
+              <div class="result-name">Léa Tokpé</div>
+              <div class="result-meta">
+                <span>L1</span><div class="meta-dot"></div>
+                <span>IA</span><div class="meta-dot"></div>
+                <span>📅 Mer/Jeu 15h–18h</span><div class="meta-dot"></div>
+                <span>💻 En ligne</span>
+              </div>
+              <div class="result-tags">
+                <span class="rtag rtag-orange">Besoin en : SQL</span>
+                <span class="rtag rtag-orange">Bases de données</span>
+              </div>
+            </div>
+            <div class="result-right">
+              <div class="score-circle">
+                <svg viewBox="0 0 64 64">
+                  <circle class="bg" cx="32" cy="32" r="27"/>
+                  <circle class="fg" cx="32" cy="32" r="27"
+                    stroke="#FF8000"
+                    stroke-dasharray="169.6"
+                    stroke-dashoffset="45.8"/>
+                </svg>
+                <div class="score-text" style="color:#FF8000;">73%</div>
+              </div>
+              <div class="result-actions">
+                <button class="btn-demander" style="background:#FF8000;">Proposer</button>
+                <button class="btn-profil">Profil</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card demande-card" data-tags="dev web html css">
+            <div class="result-avatar" style="background:#00A86B;">OM</div>
+            <div class="result-body">
+              <div class="result-name">Omar Mensah</div>
+              <div class="result-meta">
+                <span>L1</span><div class="meta-dot"></div>
+                <span>GL</span><div class="meta-dot"></div>
+                <span>📅 Sam matin</span><div class="meta-dot"></div>
+                <span>🏠 Présentiel & En ligne</span>
+              </div>
+              <div class="result-tags">
+                <span class="rtag rtag-orange">Besoin en : Dev Web</span>
+                <span class="rtag rtag-orange">HTML/CSS</span>
+              </div>
+            </div>
+            <div class="result-right">
+              <div class="score-circle">
+                <svg viewBox="0 0 64 64">
+                  <circle class="bg" cx="32" cy="32" r="27"/>
+                  <circle class="fg" cx="32" cy="32" r="27"
+                    stroke="#FF8000"
+                    stroke-dasharray="169.6"
+                    stroke-dashoffset="57.7"/>
+                </svg>
+                <div class="score-text" style="color:#FF8000;">66%</div>
+              </div>
+              <div class="result-actions">
+                <button class="btn-demander" style="background:#FF8000;">Proposer</button>
+                <button class="btn-profil">Profil</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- MES OFFRES -->
+        <div class="tab-content" id="tab-offres">
+
+          <div class="result-card offre-card">
+            <div class="result-avatar" style="background:#0080FF;">YD</div>
+            <div class="result-body">
+              <div class="result-name">Aide en Développement Web</div>
+              <div class="result-meta">
+                <span>Publié par toi</span><div class="meta-dot"></div>
+                <span>📅 Mer & Sam matin</span><div class="meta-dot"></div>
+                <span>🏠 Présentiel & En ligne</span>
+              </div>
+              <div class="result-tags">
+                <span class="rtag rtag-blue">HTML/CSS</span>
+                <span class="rtag rtag-blue">JavaScript</span>
+                <span class="rtag rtag-blue">Dev Web</span>
+              </div>
+            </div>
+            <div class="result-right">
+              <span style="background:#E6F9F0;color:#00A86B;font-size:0.72rem;font-weight:700;padding:0.3rem 0.8rem;border-radius:999px;">✅ Actif</span>
+              <div class="result-actions" style="margin-top:0.4rem;">
+                <button class="btn-demander">Modifier</button>
+                <button class="btn-profil" style="color:#E53935;border-color:#E53935;">Supprimer</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card offre-card">
+            <div class="result-avatar" style="background:#0080FF;">YD</div>
+            <div class="result-body">
+              <div class="result-name">Cours de Python débutant</div>
+              <div class="result-meta">
+                <span>Publié par toi</span><div class="meta-dot"></div>
+                <span>📅 Lun matin</span><div class="meta-dot"></div>
+                <span>💻 En ligne</span>
+              </div>
+              <div class="result-tags">
+                <span class="rtag rtag-blue">Python</span>
+              </div>
+            </div>
+            <div class="result-right">
+              <span style="background:#E6F9F0;color:#00A86B;font-size:0.72rem;font-weight:700;padding:0.3rem 0.8rem;border-radius:999px;">✅ Actif</span>
+              <div class="result-actions" style="margin-top:0.4rem;">
+                <button class="btn-demander">Modifier</button>
+                <button class="btn-profil" style="color:#E53935;border-color:#E53935;">Supprimer</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching
+    function switchTab(name, btn) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + name).classList.add('active');
+    }
+
+    // Search
+    function searchCards(q) {
+      const query = q.toLowerCase();
+      document.querySelectorAll('.result-card').forEach(card => {
+        const name = card.querySelector('.result-name').textContent.toLowerCase();
+        const tags = (card.dataset.tags || '').toLowerCase();
+        card.style.display = (name.includes(query) || tags.includes(query)) ? 'flex' : 'none';
+      });
+    }
+
+    // Demander mentorat
+    function demanderMentorat(btn, name) {
+      btn.textContent = '✓ Envoyé';
+      btn.style.background = '#00A86B';
+      btn.disabled = true;
+    }
+
+    // Apply filters (UI only)
+    function applyFilters() {
+      const btn = document.querySelector('.apply-btn');
+      btn.textContent = '✓ Appliqué';
+      setTimeout(() => btn.textContent = 'Appliquer', 1500);
+    }
+
+    function resetFilters() {
+      document.getElementById('f-filiere').value = 'Toutes';
+      document.getElementById('f-matiere').value = 'Toutes';
+      document.getElementById('f-niveau').value = 'Tous';
+      document.getElementById('f-score').value = 'Tous';
+      document.getElementById('f-presentiel').checked = true;
+      document.getElementById('f-enligne').checked = true;
+      document.querySelectorAll('.result-card').forEach(c => c.style.display = 'flex');
+    }
+
+    // Animate score circles on load
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.score-circle .fg').forEach(circle => {
+        const final = circle.getAttribute('stroke-dashoffset');
+        circle.style.strokeDashoffset = '169.6';
+        setTimeout(() => circle.style.strokeDashoffset = final, 100);
+      });
+    });
+  </script>
+
+</body>
+</html>

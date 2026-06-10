@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}IFRI MentorLink{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+{% if current_user.is_authenticated %}
+<nav class="navbar">
+  <a class="nav-brand" href="{{ url_for('profil.dashboard') }}">
+    🎓 IFRI_MentorLink
+  </a>
+  <div class="nav-links">
+    <a href="{{ url_for('profil.dashboard') }}"
+       class="{% if request.endpoint == 'profil.dashboard' %}active{% endif %}">Dashboard</a>
+    <a href="{{ url_for('profil.profil') }}"
+       class="{% if request.endpoint == 'profil.profil' %}active{% endif %}">Mon Profil</a>
+    <a href="{{ url_for('matching.index') }}"
+       class="{% if request.endpoint == 'matching.index' %}active{% endif %}">Matching</a>
+    <a href="{{ url_for('matching.liste_offres') }}"
+       class="{% if 'offres' in request.endpoint %}active{% endif %}">Offres</a>
+    <a href="{{ url_for('messages.liste') }}"
+       class="{% if 'messages' in request.endpoint %}active{% endif %}">Messages</a>
+  </div>
+  <div class="nav-user">
+    <span>{{ current_user.prenom }} {{ current_user.nom }}</span>
+    <a href="{{ url_for('auth.logout') }}" class="btn-logout">Déconnexion</a>
+  </div>
+</nav>
+{% endif %}
+
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="alert alert-{{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

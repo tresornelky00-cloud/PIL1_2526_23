@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Offres — MentorLink{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>Toutes les offres</h2>
+  <p>Parcourez les offres et demandes de mentorat disponibles</p>
+</div>
+
+<!-- Filtres -->
+<form method="GET" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+  <select name="filiere" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px">
+    <option value="">Toutes les filières</option>
+    {% for f in ["GL","IA","IM","SE_IoT","SI"] %}
+    <option value="{{ f }}" {% if filiere == f %}selected{% endif %}>{{ f }}</option>
+    {% endfor %}
+  </select>
+  <select name="competence" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px">
+    <option value="">Toutes les compétences</option>
+    {% for c in competences %}
+    <option value="{{ c.id }}" {% if comp_id == c.id %}selected{% endif %}>{{ c.nom }}</option>
+    {% endfor %}
+  </select>
+  <select name="type_offre" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px">
+    <option value="">Offres & demandes</option>
+    <option value="offre"   {% if type_off == 'offre' %}selected{% endif %}>Offres</option>
+    <option value="demande" {% if type_off == 'demande' %}selected{% endif %}>Demandes</option>
+  </select>
+  <button type="submit" class="btn btn-primary btn-sm">Filtrer</button>
+  <a href="{{ url_for('matching.liste_offres') }}" class="btn btn-outline btn-sm">Réinitialiser</a>
+</form>
+
+{% if offres %}
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    {% for offre in offres %}
+    <div class="list-card">
+      <div style="display:flex;align-items:center;gap:14px;flex:1;">
+        <div class="match-avatar" style="width:44px;height:44px;font-size:16px;">
+          {{ offre.auteur.prenom[0] }}{{ offre.auteur.nom[0] }}
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="badge badge-{% if offre.type_offre == 'offre' %}green{% else %}amber{% endif %}">
+              {{ 'Offre' if offre.type_offre == 'offre' else 'Demande' }}
+            </span>
+            <strong>{{ offre.competence.nom }}</strong>
+            <span class="text-muted" style="font-size:13px">· {{ offre.auteur.prenom }} {{ offre.auteur.nom }}</span>
+            <span class="tag tag-gray">{{ offre.auteur.filiere }} {{ offre.auteur.niveau }}</span>
+          </div>
+          {% if offre.description %}
+          <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">{{ offre.description[:120] }}{% if offre.description|length > 120 %}…{% endif %}</p>
+          {% endif %}
+          <span style="font-size:12px;color:var(--text-muted)">
+            {{ offre.format.replace('_',' ') }} · {{ offre.date_creation.strftime('%d/%m/%Y') }}
+          </span>
+        </div>
+      </div>
+      {% if offre.auteur.id != current_user.id %}
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <form method="POST" action="{{ url_for('matching.contacter', mentor_id=offre.auteur.id) }}">
+          <button type="submit" class="btn btn-primary btn-sm">Contacter</button>
+        </form>
+        <a href="{{ url_for('profil.voir_profil', user_id=offre.auteur.id) }}" class="btn btn-outline btn-sm">Profil</a>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state-box">
+    <p>Aucune offre trouvée avec ces filtres.</p>
+    <p><a href="{{ url_for('matching.liste_offres') }}">Voir toutes les offres</a></p>
+  </div>
+{% endif %}
+{% endblock %}

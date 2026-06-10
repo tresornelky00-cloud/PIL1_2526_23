@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil</title>
+    <link rel="stylesheet" href="profil.css">
+
+</head>
+<body>
+
+    <section class="register-container">
+        
+        <div class="form-section">
+            
+            <header class="header-bar">
+                <div class="logo-container">
+                    <img src="Logo Ifri Mentor Link.jpg" alt="IFRI MentorLink Logo" style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px;">
+                    <span class="logo-ifri">IFRI</span><span class="logo-mentor">MentorLink</span>
+                </div>
+                <a href="dashboard.html" class="login-link">Tableau de bord &rarr;</a>
+            </header>
+
+            <div class="triband">
+                <div class="triband-blue"></div>
+                <div class="triband-orange"></div>
+                <div class="triband-dark"></div>
+            </div>
+
+            <div class="profile-hero">
+                <div class="profile-avatar" id="avatarInitials">KA</div>
+                <div class="profile-info">
+                    <h2 id="viewName">Koffi ADANNOU</h2>
+                    <input type="text" id="editName" class="edit-input" style="color: black; margin-bottom: 5px;">
+                    <p id="viewFiliere">Intelligence artificielle — Licence 1</p>
+                    <input type="text" id="editFiliere" class="edit-input" style="color: black;">
+                    <span class="role-badge">Statut : Mentoré(e)</span>
+                </div>
+            </div>
+
+            <div class="profile-grid">
+                
+                <div class="profile-card full-width">
+                    <h3 class="card-title">📝 Ma courte biographie</h3>
+                    <p class="bio-text" id="viewBio">" Étudiant passionné par les algorithmes, le développement d'applications intelligentes et la cybersécurité. Je souhaite approfondir mes connaissances en bases de données SQL. "</p>
+                    <textarea id="editBio" class="edit-input"></textarea>
+                </div>
+
+                <div class="profile-card">
+                    <h3 class="card-title">🚀 Compétences maîtrisées (Points forts)</h3>
+                    <div class="badge-container">
+                        <span class="badge strength">✓ algorithmes</span>
+                        <span class="badge strength">✓ Programmation Python</span>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <h3 class="card-title">🎯 Compétences à améliorer (Faiblesses)</h3>
+                    <div class="badge-container">
+                        <span class="badge weakness">⚠ Base de données SQL</span>
+                        <span class="badge weakness">⚠ Développement Web</span>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <h3 class="card-title">📞 Coordonnées</h3>
+                    <div id="viewContactBox">
+                        <p style="font-size: 0.85rem; color: #475569; margin-bottom: 6px;"><strong>Email:</strong> <span id="viewEmail">koffi.adannou@gmail.com</span></p>
+                        <p style="font-size: 0.85rem; color: #475569;"><strong>Phone:</strong> <span id="viewPhone">01 99 99 99 99</span></p>
+                    </div>
+                    <div id="editContactBox" style="display:none; flex-direction:column; gap:8px;">
+                        <input type="email" id="editEmail" class="edit-input" style="display:block;" placeholder="Email">
+                        <input type="text" id="editPhone" class="edit-input" style="display:block;" placeholder="Téléphone (ex: 01XXXXXXXX)" maxlength="10">
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <h3 class="card-title">📊 Activité MentorLink</h3>
+                    <div class="stats-subgrid">
+                        <div class="stat-box">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">Séances données</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">4</div>
+                            <div class="stat-label">Séances reçues</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="btn-container">
+                <button class="btn-edit" id="actionBtn" onclick="toggleEditMode()">Modifier le profil</button>
+                <a href="connexion.html" class="btn-logout">Se déconnecter</a>
+            </div>
+        </div>
+
+        <aside class="sidebar-section">
+            <h3 class="sidebar-title">Pourquoi rejoindre</h3>
+            <ul class="benefits-list">
+                <li class="benefit-item">
+                    <div class="benefit-icon"></div>
+                    <div>Trouvez un mentor dans votre domaine d'études précis.</div>
+                </li>
+                <li class="benefit-item">
+                    <div class="benefit-icon"></div>
+                    <div>Système de messagerie intégré sécurisé</div>
+                </li>
+                <li class="benefit-item">
+                    <div class="benefit-icon"></div>
+                    <div>Appariement automatisé par compétences</div>
+                </li>
+                <li class="benefit-item">
+                    <div class="benefit-icon"></div>
+                    <div>100% gratuit pour les étudiants de l'IFRI</div>
+                </li>
+            </ul>
+        </aside>
+
+    </section>
+    <script src="profil.js"></script>
+</body>
+</html>

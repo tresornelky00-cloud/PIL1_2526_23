@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Connexion — MentorLink{% endblock %}
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <h1>🎓 IFRI_MentorLink</h1>
+    <p class="auth-sub">Connectez-vous à votre compte</p>
+    <form method="POST">
+      <div class="form-group">
+        <label>Email ou téléphone</label>
+        <input type="text" name="identifiant" required placeholder="votre@email.com" />
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" name="mot_de_passe" required placeholder="••••••••" />
+      </div>
+      <button type="submit" class="btn btn-primary w-full">Se connecter</button>
+    </form>
+    <p class="auth-footer">Pas encore de compte ?
+      <a href="{{ url_for('auth.inscription') }}">S'inscrire</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
