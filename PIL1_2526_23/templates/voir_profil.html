@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ user.prenom }} {{ user.nom }} — IFRI MentorLink{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">Profil de {{ user.prenom }}</div>
+  <a href="{{ url_for('messages.ouvrir_conversation', user_id=user.id) }}" class="btn btn-primary">💬 Envoyer un message</a>
+</div>
+<div class="page-body" style="max-width:700px;">
+  <div class="card" style="margin-bottom:1.25rem;">
+    <div style="display:flex;align-items:center;gap:1.5rem;">
+      <div class="avatar avatar-xl avatar-blue">{{ user.prenom[0]|upper }}{{ user.nom[0]|upper }}</div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;">{{ user.prenom }} {{ user.nom }}</div>
+        <div style="color:var(--text-soft);">{{ user.niveau }} — {{ user.filiere }}</div>
+        {% if user.bio %}<p style="margin-top:0.5rem;color:var(--text-mid);font-size:0.9rem;">{{ user.bio }}</p>{% endif %}
+      </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+    <div class="card">
+      <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:1rem;color:var(--blue);">✅ Compétences maîtrisées</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+        {% for c in user.maitrisees() %}<span class="tag tag-blue">{{ c.nom }}</span>{% else %}<span style="color:var(--text-soft);font-size:0.85rem;">Aucune renseignée</span>{% endfor %}
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:1rem;color:var(--orange);">🔴 Lacunes</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+        {% for c in user.lacunes() %}<span class="tag tag-orange">{{ c.nom }}</span>{% else %}<span style="color:var(--text-soft);font-size:0.85rem;">Aucune renseignée</span>{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

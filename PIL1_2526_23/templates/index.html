@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IFRI MentorLink — Plateforme de mentorat étudiant</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+  <style>
+    body { background: var(--white); overflow-x: hidden; }
+
+    /* ── NAVBAR ── */
+    .landing-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 72px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1.5px solid var(--gray-mid);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.15rem;
+    }
+    .nav-logo img { height: 36px; }
+    .nav-logo .ifri   { color: var(--blue); }
+    .nav-logo .mentor { color: var(--white); background: var(--orange); padding: 2px 7px; border-radius: 4px; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.88rem; font-weight: 500; color: var(--text-mid); transition: color var(--transition); }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 100px 5% 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg-circle {
+      position: absolute; border-radius: 50%;
+      opacity: 0.07; pointer-events: none;
+    }
+    .c1 { width: 600px; height: 600px; background: var(--blue); top: -150px; right: -100px; }
+    .c2 { width: 400px; height: 400px; background: var(--orange); bottom: -100px; right: 200px; }
+
+    .hero-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+      max-width: 1200px; margin: 0 auto; width: 100%;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--blue-light); color: var(--blue);
+      font-size: 0.75rem; font-weight: 600;
+      padding: 0.4rem 1rem; border-radius: 999px;
+      margin-bottom: 1.5rem; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .hero-badge span { width: 6px; height: 6px; background: var(--blue); border-radius: 50%; }
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      font-weight: 800; line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title .accent-blue   { color: var(--blue); }
+    .hero-title .accent-orange { color: var(--orange); }
+    .hero-sub { font-size: 1.05rem; color: var(--text-mid); line-height: 1.7; margin-bottom: 2.5rem; max-width: 480px; }
+    .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* ── FLOATING CARDS ── */
+    .hero-visual { position: relative; display: flex; justify-content: center; align-items: center; }
+    .cards-stack { position: relative; width: 340px; height: 420px; }
+    .mentor-card {
+      position: absolute; background: var(--white);
+      border-radius: 18px; padding: 1.4rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.10);
+      width: 280px; animation: float 4s ease-in-out infinite;
+    }
+    .mentor-card:nth-child(1) { top: 0; left: 0; animation-delay: 0s; z-index: 3; }
+    .mentor-card:nth-child(2) { top: 80px; right: 0; animation-delay: 1.5s; z-index: 2; }
+    .mentor-card:nth-child(3) { bottom: 0; left: 20px; animation-delay: 0.8s; z-index: 1; width: 240px; padding: 1rem 1.2rem; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+    .card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .card-role { font-size: 0.75rem; color: var(--text-soft); }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; }
+    .match-score {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--gray-light); border-radius: 10px; padding: 0.6rem 0.9rem;
+    }
+    .score-lbl { font-size: 0.72rem; color: var(--text-soft); font-weight: 500; }
+    .score-val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--orange); }
+
+    /* ── STATS ── */
+    .stats-section { background: var(--gray-light); padding: 3rem 5%; }
+    .stats-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem; text-align: center;
+    }
+    .stat-num-hero { font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--blue); }
+    .stat-num-hero.orange { color: var(--orange); }
+    .stat-lbl { font-size: 0.88rem; color: var(--text-mid); margin-top: 0.3rem; }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { padding: 6rem 5%; background: var(--white); }
+    .section-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
+    .steps {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; position: relative;
+    }
+    .steps::before {
+      content: ''; position: absolute;
+      top: 48px; left: 16%; right: 16%; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--orange)); opacity: 0.3;
+    }
+    .step {
+      background: var(--white); border: 1.5px solid var(--gray-mid);
+      border-radius: var(--radius-lg); padding: 2rem 1.75rem; text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s; position: relative;
+    }
+    .step:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .step-icon { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 2rem; }
+    .step-num {
+      position: absolute; top: -14px; right: 1.5rem;
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.8rem; color: var(--white);
+    }
+    .step-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.6rem; }
+    .step-desc { font-size: 0.88rem; color: var(--text-mid); line-height: 1.65; }
+
+    /* ── FEATURES ── */
+    .features-section { padding: 6rem 5%; background: var(--gray-light); }
+    .features-grid {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem;
+    }
+    .feature-card {
+      background: var(--white); border-radius: 18px; padding: 2rem;
+      border: 1.5px solid var(--gray-mid);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .feature-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.1rem; }
+    .feature-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+    .feature-desc { font-size: 0.85rem; color: var(--text-mid); line-height: 1.65; }
+
+    /* ── CTA ── */
+    .cta-banner {
+      margin: 4rem 5%; border-radius: 28px;
+      background: linear-gradient(135deg, var(--blue) 0%, #0055cc 100%);
+      padding: 4rem 5%;
+      display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+      position: relative; overflow: hidden;
+    }
+    .cta-banner::after {
+      content: ''; position: absolute; right: -80px; top: -80px;
+      width: 320px; height: 320px; border-radius: 50%;
+      background: var(--orange); opacity: 0.15;
+    }
+    .cta-text { position: relative; z-index: 1; }
+    .cta-title { font-family: 'Syne', sans-serif; font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 800; color: var(--white); margin-bottom: 0.5rem; }
+    .cta-sub { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
+    .cta-actions { display: flex; gap: 1rem; flex-shrink: 0; position: relative; z-index: 1; }
+    .btn-white { background: var(--white); color: var(--blue); font-weight: 700; }
+    .btn-white:hover { background: #f0f0f0; }
+    .btn-outline-white { background: transparent; border: 2px solid rgba(255,255,255,0.5); color: var(--white); font-weight: 600; }
+    .btn-outline-white:hover { border-color: var(--white); background: rgba(255,255,255,0.1); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--dark-navy); padding: 3rem 5% 2rem; color: rgba(255,255,255,0.6); }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+      padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 1.5rem;
+    }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { color: rgba(255,255,255,0.6); font-size: 0.85rem; transition: color var(--transition); }
+    .footer-links a:hover { color: var(--white); }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; font-size: 0.8rem; text-align: center; }
+
+    /* ── FADE IN ── */
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-sub { margin: 0 auto 2rem; }
+      .hero-cta { justify-content: center; }
+      .hero-visual { display: none; }
+      .stats-inner { grid-template-columns: repeat(2,1fr); }
+      .steps { grid-template-columns: 1fr; }
+      .steps::before { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .cta-banner { flex-direction: column; text-align: center; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="landing-nav">
+  <a href="#" class="nav-logo">
+    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" onerror="this.style.display='none'">
+    <span><span class="ifri">IFRI</span> <span class="mentor">MentorLink</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#comment">Comment ça marche</a></li>
+    <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="{{ url_for('auth.login') }}" class="btn btn-outline">Connexion</a>
+    <a href="{{ url_for('auth.inscription') }}" class="btn btn-primary">S'inscrire</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+  <div class="hero-grid">
+    <div class="hero-content fade-in">
+      <div class="hero-badge"><span></span> Plateforme de mentorat IFRI</div>
+      <h1 class="hero-title">
+        Connecte-toi avec le <span class="accent-orange">bon mentor</span>,<br/>
+        au <span class="accent-blue">bon moment</span>.
+      </h1>
+      <p class="hero-sub">
+        IFRI MentorLink met en relation les étudiants qui souhaitent progresser avec ceux qui maîtrisent.
+        Partage de compétences, matching intelligent, accompagnement personnalisé.
+      </p>
+      <div class="hero-cta">
+        <a href="{{ url_for('auth.inscription') }}" class="btn btn-primary btn-lg">Rejoindre la plateforme</a>
+        <a href="#comment" class="btn btn-outline btn-lg">Comment ça marche</a>
+      </div>
+    </div>
+    <div class="hero-visual fade-in" style="transition-delay:0.2s">
+      <div class="cards-stack">
+        <div class="mentor-card">
+          <div class="card-header">
+            <div class="avatar avatar-blue">AK</div>
+            <div><div class="card-name">Awa Koné</div><div class="card-role">Mentor · GL — L2</div></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag tag-blue">Python</span>
+            <span class="tag tag-blue">SQL</span>
+            <span class="tag tag-blue">Algo</span>
+          </div>
+          <div class="match-score">
+            <span class="score-lbl">Compatibilité</span>
+            <span class="score-val">94%</span>
+          </div>
+        </div>
+        <div class="mentor-card">
+          <div class="card-header">
+            <div class="avatar avatar-orange">YD</div>
+            <div><div class="card-name">Yao Dossou</div><div class="card-role">Mentoré · IA — L1</div></div>
+          </div>
+          <div class="card-tags">
+            <span class="tag tag-orange">Algo</span>
+            <span class="tag tag-orange">Web</span>
+          </div>
+          <div class="match-score">
+            <span class="score-lbl">Disponibilité</span>
+            <span class="score-val">Mer 15h</span>
+          </div>
+        </div>
+        <div class="mentor-card">
+          <div style="font-size:0.72rem;color:var(--text-soft);font-weight:600;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.05em;">💬 Nouveau message</div>
+          <div style="font-size:0.85rem;font-weight:600;">Awa Koné</div>
+          <div style="font-size:0.78rem;color:var(--text-mid);margin-top:0.2rem;">On se retrouve mercredi à 15h ?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="stats-inner fade-in">
+    <div><div class="stat-num-hero">5</div><div class="stat-lbl">Filières connectées</div></div>
+    <div><div class="stat-num-hero orange">20+</div><div class="stat-lbl">Matières disponibles</div></div>
+    <div><div class="stat-num-hero">100%</div><div class="stat-lbl">Par les étudiants IFRI</div></div>
+    <div><div class="stat-num-hero orange">Smart</div><div class="stat-lbl">Matching automatique</div></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="comment">
+  <div class="section-header fade-in">
+    <span class="section-tag">🚀 Démarrage rapide</span>
+    <h2 class="section-title">Comment ça marche ?</h2>
+    <p class="section-sub">Trois étapes simples pour trouver ton mentor ou accompagner un pair.</p>
+  </div>
+  <div class="steps">
+    <div class="step fade-in">
+      <span class="step-num" style="background:var(--blue)">1</span>
+      <div class="step-icon" style="background:var(--blue-light)">👤</div>
+      <div class="step-title">Crée ton profil</div>
+      <p class="step-desc">Indique ta filière, ton niveau, tes compétences maîtrisées et tes lacunes.</p>
+    </div>
+    <div class="step fade-in" style="transition-delay:0.15s">
+      <span class="step-num" style="background:var(--orange)">2</span>
+      <div class="step-icon" style="background:var(--orange-light)">🔗</div>
+      <div class="step-title">Matching intelligent</div>
+      <p class="step-desc">Notre algorithme analyse compétences, filières et disponibilités pour te proposer les meilleurs profils.</p>
+    </div>
+    <div class="step fade-in" style="transition-delay:0.3s">
+      <span class="step-num" style="background:var(--blue)">3</span>
+      <div class="step-icon" style="background:var(--blue-light)">💬</div>
+      <div class="step-title">Démarre le mentorat</div>
+      <p class="step-desc">Contacte ton mentor via la messagerie intégrée et planifiez vos sessions ensemble.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="fonctionnalites">
+  <div class="section-header fade-in">
+    <span class="section-tag">✨ Ce que tu trouveras</span>
+    <h2 class="section-title">Tout ce dont tu as besoin</h2>
+    <p class="section-sub">Une plateforme complète conçue par et pour les étudiants de l'IFRI.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card fade-in"><div class="feature-icon" style="background:var(--blue-light)">🧑‍🎓</div><div class="feature-title">Profils détaillés</div><p class="feature-desc">Compétences, lacunes, disponibilités, filière — tout pour un matching précis.</p></div>
+    <div class="feature-card fade-in" style="transition-delay:0.1s"><div class="feature-icon" style="background:var(--orange-light)">🎯</div><div class="feature-title">Offres & Demandes</div><p class="feature-desc">Publie une offre de mentorat ou réponds aux annonces qui correspondent à ton profil.</p></div>
+    <div class="feature-card fade-in" style="transition-delay:0.2s"><div class="feature-icon" style="background:var(--blue-light)">⚡</div><div class="feature-title">Matching automatique</div><p class="feature-desc">Score calculé sur les compétences, filières et disponibilités communes.</p></div>
+    <div class="feature-card fade-in" style="transition-delay:0.1s"><div class="feature-icon" style="background:var(--orange-light)">💬</div><div class="feature-title">Messagerie instantanée</div><p class="feature-desc">Échangez en temps réel avec historique complet et notifications.</p></div>
+    <div class="feature-card fade-in" style="transition-delay:0.2s"><div class="feature-icon" style="background:var(--blue-light)">📅</div><div class="feature-title">Disponibilités</div><p class="feature-desc">Indique tes créneaux libres pour des matchs vraiment compatibles.</p></div>
+    <div class="feature-card fade-in" style="transition-delay:0.3s"><div class="feature-icon" style="background:var(--orange-light)">📊</div><div class="feature-title">Dashboard complet</div><p class="feature-desc">Suis tes matchs, conversations et progression depuis un seul endroit.</p></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-banner fade-in">
+  <div class="cta-text">
+    <div class="cta-title">Prêt à booster ta formation ?</div>
+    <p class="cta-sub">Rejoins IFRI MentorLink et trouve ton mentor dès aujourd'hui.</p>
+  </div>
+  <div class="cta-actions">
+    <a href="{{ url_for('auth.inscription') }}" class="btn btn-white btn-lg">Créer mon compte</a>
+    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-white btn-lg">Se connecter</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="nav-logo" style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;">
+      <span class="ifri" style="color:var(--blue)">IFRI</span>&nbsp;<span style="color:var(--orange)">MentorLink</span>
+    </div>
+    <div class="footer-links">
+      <a href="#comment">Comment ça marche</a>
+      <a href="#fonctionnalites">Fonctionnalités</a>
+      <a href="{{ url_for('auth.login') }}">Connexion</a>
+      <a href="{{ url_for('auth.inscription') }}">Inscription</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 IFRI MentorLink · Université d'Abomey-Calavi · Institut de Formation et de Recherche en Informatique</div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+  document.querySelectorAll('.hero .fade-in').forEach(el => setTimeout(() => el.classList.add('visible'), 100));
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Nouvelle offre — IFRI MentorLink{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">📤 Publier une offre</div>
+</div>
+<div class="page-body" style="max-width:600px;">
+  <div class="card">
+    <form method="POST" action="{{ url_for('profil.nouvelle_offre') }}">
+      <div class="form-group">
+        <label>Type</label>
+        <select name="type_offre" class="input-field" required>
+          <option value="offre">📤 Je propose du mentorat</option>
+          <option value="demande">📥 Je cherche un mentor</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Compétence concernée</label>
+        <select name="competence_id" class="input-field" required>
+          <option value="" disabled selected>Choisir une compétence</option>
+          {% for c in competences %}
+            <option value="{{ c.id }}">{{ c.nom }} ({{ c.categorie }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Format</label>
+        <select name="format" class="input-field">
+          <option value="les_deux">Présentiel & En ligne</option>
+          <option value="presentiel">Présentiel uniquement</option>
+          <option value="en_ligne">En ligne uniquement</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Description (optionnel)</label>
+        <textarea name="description" class="input-field" placeholder="Décris ce que tu proposes ou recherches…"></textarea>
+      </div>
+      <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+        <a href="{{ url_for('profil.dashboard') }}" class="btn btn-ghost">Annuler</a>
+        <button type="submit" class="btn btn-primary">Publier l'offre</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Matching — IFRI MentorLink{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-title">🎯 Matching intelligent</div>
+  <a href="{{ url_for('matching.liste_offres') }}" class="btn btn-outline">Voir les offres</a>
+</div>
+
+<div class="page-body">
+  {% if suggestions %}
+    <p style="color:var(--text-soft);font-size:0.85rem;margin-bottom:1.5rem;">
+      {{ suggestions | length }} mentor(s) trouvé(s) compatible(s) avec ton profil.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;">
+      {% for s in suggestions %}
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+          <div class="avatar avatar-lg {% if loop.index % 2 == 0 %}avatar-orange{% else %}avatar-blue{% endif %}">
+            {{ s.mentor.prenom[0]|upper }}{{ s.mentor.nom[0]|upper }}
+          </div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;">{{ s.mentor.prenom }} {{ s.mentor.nom }}</div>
+            <div style="font-size:0.78rem;color:var(--text-soft);">{{ s.mentor.niveau }} — {{ s.mentor.filiere }}</div>
+          </div>
+          <div style="margin-left:auto;text-align:right;">
+            <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--orange);">{{ s.score }}%</div>
+            <div style="font-size:0.7rem;color:var(--text-soft);">compatibilité</div>
+          </div>
+        </div>
+
+        <div class="score-bar" style="margin-bottom:1rem;">
+          <div class="score-fill" style="width:{{ s.score }}%"></div>
+        </div>
+
+        {% if s.mentor.bio %}
+          <p style="font-size:0.82rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.6;">{{ s.mentor.bio[:120] }}{% if s.mentor.bio|length > 120 %}…{% endif %}</p>
+        {% endif %}
+
+        {% set comps = s.mentor.maitrisees()[:4] %}
+        {% if comps %}
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem;">
+            {% for c in comps %}
+              <span class="tag tag-blue">{{ c.nom }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div style="display:flex;gap:0.5rem;">
+          <a href="{{ url_for('profil.voir_profil', user_id=s.mentor.id) }}" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;">Voir profil</a>
+          <form method="POST" action="{{ url_for('matching.contacter', mentor_id=s.mentor.id) }}" style="flex:1;">
+            <button type="submit" class="btn btn-blue btn-sm" style="width:100%;justify-content:center;">💬 Contacter</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">🔍</div>
+      <p>Aucun mentor trouvé pour l'instant.</p>
+      <p style="margin-top:0.5rem;">Complète ton profil avec des lacunes pour obtenir des suggestions.</p>
+      <a href="{{ url_for('profil.profil') }}" class="btn btn-primary" style="margin-top:1.5rem;">Compléter mon profil</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

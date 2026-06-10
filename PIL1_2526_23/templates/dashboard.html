@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — IFRI MentorLink{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="page-title">Bonjour, {{ current_user.prenom }} 👋</div>
+    <div style="font-size:0.8rem;color:var(--text-soft);margin-top:0.2rem;">{{ now.strftime('%A %d %B %Y') if now else '' }}</div>
+  </div>
+  <a href="{{ url_for('profil.nouvelle_offre') }}" class="btn btn-primary">+ Nouvelle offre</a>
+</div>
+
+<div class="page-body">
+  <!-- Stats -->
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="stat-icon stat-icon-blue">🎯</div>
+      <div><div class="stat-num">{{ matchs_count }}</div><div class="stat-label">Matchs</div></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-icon stat-icon-orange">💬</div>
+      <div><div class="stat-num">{{ convs_count }}</div><div class="stat-label">Conversations</div></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-icon stat-icon-blue">📋</div>
+      <div><div class="stat-num">{{ offres | length }}</div><div class="stat-label">Mes offres</div></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-icon stat-icon-orange">⭐</div>
+      <div><div class="stat-num">{{ profil_pct }}%</div><div class="stat-label">Profil complété</div></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+
+    <!-- Suggestions de matching -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <h2 style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;">🎯 Matchs recommandés</h2>
+        <a href="{{ url_for('matching.index') }}" style="font-size:0.8rem;color:var(--blue);font-weight:600;">Voir tout →</a>
+      </div>
+      {% if suggestions %}
+        {% for s in suggestions[:4] %}
+        <div class="card-flat" style="margin-bottom:0.75rem;display:flex;align-items:center;gap:1rem;">
+          <div class="avatar avatar-{% if loop.index % 2 == 0 %}orange{% else %}blue{% endif %}">
+            {{ s.mentor.prenom[0] | upper }}{{ s.mentor.nom[0] | upper }}
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:600;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              {{ s.mentor.prenom }} {{ s.mentor.nom }}
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-soft);">{{ s.mentor.niveau }} — {{ s.mentor.filiere }}</div>
+            <div class="score-bar-wrap">
+              <div class="score-bar"><div class="score-fill" style="width:{{ s.score }}%"></div></div>
+              <div class="score-label-row"><span>Compatibilité</span><span style="color:var(--orange);font-weight:700;">{{ s.score }}%</span></div>
+            </div>
+          </div>
+          <form method="POST" action="{{ url_for('matching.contacter', mentor_id=s.mentor.id) }}">
+            <button class="btn btn-blue btn-sm">Contacter</button>
+          </form>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="icon">🔍</div>
+          <p>Complète ton profil pour recevoir des suggestions.</p>
+          <a href="{{ url_for('profil.profil') }}" class="btn btn-outline" style="margin-top:1rem;">Compléter mon profil</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Mes offres -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <h2 style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;">📋 Mes offres actives</h2>
+        <a href="{{ url_for('matching.liste_offres') }}" style="font-size:0.8rem;color:var(--blue);font-weight:600;">Voir tout →</a>
+      </div>
+      {% if offres %}
+        {% for offre in offres %}
+        <div class="card-flat" style="margin-bottom:0.75rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+            <span class="tag {% if offre.type_offre == 'offre' %}tag-blue{% else %}tag-orange{% endif %}">
+              {{ '📤 Offre' if offre.type_offre == 'offre' else '📥 Demande' }}
+            </span>
+            <form method="POST" action="{{ url_for('profil.supprimer_offre', offre_id=offre.id) }}" style="display:inline">
+              <button class="btn btn-danger btn-sm">Supprimer</button>
+            </form>
+          </div>
+          <div style="font-weight:600;font-size:0.9rem;">{{ offre.competence.nom }}</div>
+          {% if offre.description %}
+            <div style="font-size:0.8rem;color:var(--text-soft);margin-top:0.25rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ offre.description }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="icon">📋</div>
+          <p>Aucune offre publiée pour l'instant.</p>
+          <a href="{{ url_for('profil.nouvelle_offre') }}" class="btn btn-primary" style="margin-top:1rem;">+ Créer une offre</a>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

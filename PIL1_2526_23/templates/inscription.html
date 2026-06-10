@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inscription — IFRI MentorLink</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+  <style>
+    body { background: linear-gradient(135deg, #F5F7FA 0%, #E4E8F0 100%); min-height: 100vh; display: flex; flex-direction: column; }
+    .insc-nav {
+      background: var(--dark-navy); padding: 0 5%; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .insc-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); }
+    .insc-logo span { color: var(--orange); }
+    .insc-nav a { color: rgba(255,255,255,0.7); font-size: 0.85rem; transition: color var(--transition); }
+    .insc-nav a:hover { color: var(--white); }
+
+    .main-container {
+      flex: 1; max-width: 1000px; width: 100%; margin: 2rem auto;
+      display: flex; background: var(--white); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg); overflow: hidden; border: 1.5px solid var(--gray-mid);
+    }
+    .form-section { flex: 2.5; padding: 2.5rem; }
+    .info-sidebar {
+      flex: 1; background: var(--blue);
+      padding: 2.5rem 2rem; color: var(--white);
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+    .info-sidebar h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem; }
+    .info-item { display: flex; gap: 0.75rem; align-items: flex-start; font-size: 0.85rem; line-height: 1.6; opacity: 0.9; }
+    .info-item .ico { font-size: 1.2rem; flex-shrink: 0; }
+
+    /* Stepper */
+    .stepper { display: flex; align-items: center; margin-bottom: 2rem; position: relative; }
+    .step-line { position: absolute; top: 18px; left: 18px; right: 18px; height: 2px; background: var(--gray-mid); z-index: 0; }
+    .step-line-progress { position: absolute; top: 18px; left: 18px; height: 2px; background: var(--blue); z-index: 1; transition: width 0.4s ease; width: 0%; }
+    .stepper-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; z-index: 2; }
+    .step-circle {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem;
+      background: var(--gray-mid); color: var(--text-soft);
+      border: 2px solid var(--gray-mid);
+      transition: all 0.3s;
+    }
+    .stepper-step.active .step-circle { background: var(--blue); color: var(--white); border-color: var(--blue); }
+    .stepper-step.done .step-circle { background: #e8f5e9; color: var(--green); border-color: var(--green); }
+    .step-label { font-size: 0.72rem; color: var(--text-soft); margin-top: 0.3rem; font-weight: 600; }
+    .stepper-step.active .step-label { color: var(--blue); }
+
+    /* Step contents */
+    .step-content { display: none; }
+    .step-content.active { display: block; }
+    .step-content h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--text-dark); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn-group { display: flex; justify-content: space-between; margin-top: 1.5rem; }
+
+    /* Compétences badges */
+    .comp-input-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .comp-input-row input { flex: 1; }
+    .comp-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; min-height: 36px; padding: 0.5rem; border: 1.5px dashed var(--gray-mid); border-radius: var(--radius); background: var(--gray-light); }
+    .comp-badge { display: flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.6rem; border-radius: 999px; }
+    .comp-badge button { background: none; border: none; cursor: pointer; font-size: 0.85rem; line-height: 1; opacity: 0.7; }
+    .comp-badge button:hover { opacity: 1; }
+
+    /* Disponibilités */
+    .dispo-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.75rem; align-items: end; margin-bottom: 0.75rem; }
+    .dispo-row .btn { align-self: end; }
+    #dispoList { margin-bottom: 1rem; }
+    .dispo-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: var(--blue-light); border-radius: var(--radius); font-size: 0.82rem; margin-bottom: 0.5rem; }
+    .dispo-item span { flex: 1; color: var(--text-mid); }
+    .dispo-item button { background: none; border: none; cursor: pointer; color: var(--error); }
+
+    @media (max-width: 700px) {
+      .main-container { flex-direction: column; margin: 1rem; }
+      .info-sidebar { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="insc-nav">
+  <div class="insc-logo">IFRI <span>MentorLink</span></div>
+  <a href="{{ url_for('auth.login') }}">Connexion →</a>
+</nav>
+<div class="triband"></div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="max-width:1000px;margin:1rem auto;padding:0 1rem;">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="main-container">
+  <!-- FORM -->
+  <div class="form-section">
+    <!-- Stepper -->
+    <div class="stepper">
+      <div class="step-line"></div>
+      <div class="step-line-progress" id="stepProgress"></div>
+      <div class="stepper-step active" id="si1"><div class="step-circle">1</div><div class="step-label">Identité</div></div>
+      <div class="stepper-step" id="si2"><div class="step-circle">2</div><div class="step-label">Profil</div></div>
+      <div class="stepper-step" id="si3"><div class="step-circle">3</div><div class="step-label">Créneaux</div></div>
+    </div>
+
+    <form id="regForm" method="POST" action="{{ url_for('auth.inscription') }}">
+
+      <!-- ÉTAPE 1 -->
+      <div class="step-content active" id="sc1">
+        <h2>Informations personnelles</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prénom <span style="color:var(--error)">*</span></label>
+            <input type="text" name="prenom" class="input-field" required placeholder="Ex: Koffi">
+          </div>
+          <div class="form-group">
+            <label>Nom <span style="color:var(--error)">*</span></label>
+            <input type="text" name="nom" class="input-field" required placeholder="Ex: ADANNOU">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email <span style="color:var(--error)">*</span></label>
+          <input type="email" name="email" class="input-field" required placeholder="exemple@ifri.uac.bj">
+        </div>
+        <div class="form-group">
+          <label>Numéro de téléphone <span style="color:var(--error)">*</span></label>
+          <input type="tel" name="telephone" class="input-field" required placeholder="01XXXXXXXX" maxlength="10">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mot de passe <span style="color:var(--error)">*</span></label>
+            <input type="password" name="mot_de_passe" id="mdp" class="input-field" required placeholder="Min. 6 caractères">
+          </div>
+          <div class="form-group">
+            <label>Confirmer le mot de passe <span style="color:var(--error)">*</span></label>
+            <input type="password" name="confirm_mdp" id="mdp2" class="input-field" required placeholder="Répéter le mot de passe">
+          </div>
+        </div>
+        <div class="btn-group">
+          <div></div>
+          <button type="button" class="btn btn-blue" onclick="goStep(1,2)">Suivant →</button>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2 -->
+      <div class="step-content" id="sc2">
+        <h2>Votre parcours à l'IFRI</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Filière <span style="color:var(--error)">*</span></label>
+            <select name="filiere" class="input-field" required>
+              <option value="" disabled selected>Choisir une filière</option>
+              <option value="GL">Génie Logiciel (GL)</option>
+              <option value="IA">Intelligence Artificielle (IA)</option>
+              <option value="IM">Ingénierie Mathématique (IM)</option>
+              <option value="SE_IoT">Systèmes Embarqués & IoT</option>
+              <option value="SI">Sécurité Informatique (SI)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Niveau <span style="color:var(--error)">*</span></label>
+            <select name="niveau" class="input-field" required>
+              <option value="" disabled selected>Choisir votre niveau</option>
+              <option value="L1">Licence 1 (L1)</option>
+              <option value="L2">Licence 2 (L2)</option>
+              <option value="L3">Licence 3 (L3)</option>
+              <option value="M1">Master 1 (M1)</option>
+              <option value="M2">Master 2 (M2)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Compétences maîtrisées</label>
+          <div class="comp-input-row">
+            <input type="text" id="maitInput" class="input-field" placeholder="Ex: Python, SQL, Algo…">
+            <button type="button" class="btn btn-blue" onclick="addComp('maitrise')">+</button>
+          </div>
+          <div class="comp-badges" id="maitBadges"></div>
+          <input type="hidden" name="maitrisees_txt" id="maitHidden">
+        </div>
+        <div class="form-group">
+          <label>Lacunes (matières où vous avez besoin d'aide)</label>
+          <div class="comp-input-row">
+            <input type="text" id="lacInput" class="input-field" placeholder="Ex: Réseaux, ML, C++…">
+            <button type="button" class="btn btn-primary" onclick="addComp('lacune')">+</button>
+          </div>
+          <div class="comp-badges" id="lacBadges"></div>
+          <input type="hidden" name="lacunes_txt" id="lacHidden">
+        </div>
+        <div class="form-group">
+          <label>Biographie (optionnel)</label>
+          <textarea name="bio" class="input-field" placeholder="Décris-toi en quelques mots…"></textarea>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-ghost" onclick="goStep(2,1)">← Retour</button>
+          <button type="button" class="btn btn-blue" onclick="goStep(2,3)">Suivant →</button>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3 -->
+      <div class="step-content" id="sc3">
+        <h2>Vos disponibilités</h2>
+        <p style="font-size:0.85rem;color:var(--text-soft);margin-bottom:1.25rem;">Ajoutez vos créneaux libres pour que le matching soit plus précis.</p>
+        <div class="dispo-row">
+          <div class="form-group" style="margin:0">
+            <label>Jour</label>
+            <select id="dispoJour" class="input-field">
+              <option value="Lundi">Lundi</option>
+              <option value="Mardi">Mardi</option>
+              <option value="Mercredi">Mercredi</option>
+              <option value="Jeudi">Jeudi</option>
+              <option value="Vendredi">Vendredi</option>
+              <option value="Samedi">Samedi</option>
+              <option value="Dimanche">Dimanche</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Début</label>
+            <input type="time" id="dispoDebut" class="input-field" value="08:00">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Fin</label>
+            <input type="time" id="dispoFin" class="input-field" value="10:00">
+          </div>
+          <button type="button" class="btn btn-blue" onclick="addDispo()">Ajouter</button>
+        </div>
+        <div id="dispoList"></div>
+        <div id="dispoHiddenFields"></div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-ghost" onclick="goStep(3,2)">← Retour</button>
+          <button type="submit" class="btn btn-primary btn-lg">Créer mon compte 🎉</button>
+        </div>
+      </div>
+
+    </form>
+
+    <div style="text-align:center;margin-top:1.5rem;font-size:0.85rem;color:var(--text-soft);">
+      Déjà un compte ? <a href="{{ url_for('auth.login') }}" style="color:var(--blue);font-weight:600;">Se connecter</a>
+    </div>
+  </div>
+
+  <!-- SIDEBAR INFO -->
+  <aside class="info-sidebar">
+    <div>
+      <h3>🎯 Pourquoi rejoindre ?</h3>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div class="info-item"><span class="ico">✅</span><span>Trouve un mentor adapté à tes lacunes et ta filière</span></div>
+        <div class="info-item"><span class="ico">⚡</span><span>Matching automatique basé sur tes compétences et disponibilités</span></div>
+        <div class="info-item"><span class="ico">💬</span><span>Messagerie instantanée intégrée</span></div>
+        <div class="info-item"><span class="ico">🎓</span><span>Plateforme 100% gratuite pour les étudiants IFRI</span></div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius);padding:1.25rem;margin-top:auto;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.5rem;">Inscription en 3 étapes</div>
+      <div style="font-size:0.82rem;opacity:0.85;line-height:1.6;">Identité → Profil → Disponibilités</div>
+    </div>
+  </aside>
+</div>
+
+<script>
+// ── STEPPER ──
+function goStep(from, to) {
+  if (from === 1 && to === 2) {
+    const mdp = document.getElementById('mdp').value;
+    const mdp2 = document.getElementById('mdp2').value;
+    if (mdp !== mdp2) { alert('Les mots de passe ne correspondent pas !'); return; }
+    if (mdp.length < 6) { alert('Le mot de passe doit faire au moins 6 caractères.'); return; }
+  }
+  document.getElementById('sc' + from).classList.remove('active');
+  document.getElementById('sc' + to).classList.add('active');
+  document.getElementById('si' + from).classList.remove('active');
+  if (from < to) document.getElementById('si' + from).classList.add('done');
+  document.getElementById('si' + to).classList.add('active');
+  const progress = { 1: '0%', 2: '50%', 3: '100%' };
+  document.getElementById('stepProgress').style.width = progress[to];
+}
+
+// ── COMPÉTENCES ──
+const comps = { maitrise: [], lacune: [] };
+function addComp(type) {
+  const input = document.getElementById(type === 'maitrise' ? 'maitInput' : 'lacInput');
+  const val = input.value.trim();
+  if (!val || comps[type].includes(val)) { input.value = ''; return; }
+  comps[type].push(val);
+  renderBadges(type);
+  input.value = '';
+  updateHidden(type);
+}
+function removeComp(type, val) {
+  comps[type] = comps[type].filter(v => v !== val);
+  renderBadges(type);
+  updateHidden(type);
+}
+function renderBadges(type) {
+  const cont = document.getElementById(type === 'maitrise' ? 'maitBadges' : 'lacBadges');
+  const color = type === 'maitrise' ? 'tag-blue' : 'tag-orange';
+  cont.innerHTML = comps[type].map(v =>
+    `<span class="comp-badge ${color}">${v}<button type="button" onclick="removeComp('${type}','${v}')">×</button></span>`
+  ).join('');
+}
+function updateHidden(type) {
+  document.getElementById(type === 'maitrise' ? 'maitHidden' : 'lacHidden').value = comps[type].join(',');
+}
+document.getElementById('maitInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addComp('maitrise'); } });
+document.getElementById('lacInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addComp('lacune'); } });
+
+// ── DISPONIBILITÉS ──
+const dispos = [];
+function addDispo() {
+  const jour = document.getElementById('dispoJour').value;
+  const debut = document.getElementById('dispoDebut').value;
+  const fin = document.getElementById('dispoFin').value;
+  if (!debut || !fin || debut >= fin) { alert('Créneau invalide — vérifiez les heures.'); return; }
+  dispos.push({ jour, debut, fin });
+  renderDispos();
+}
+function removeDispo(i) { dispos.splice(i, 1); renderDispos(); }
+function renderDispos() {
+  const list = document.getElementById('dispoList');
+  const hidden = document.getElementById('dispoHiddenFields');
+  list.innerHTML = dispos.map((d, i) =>
+    `<div class="dispo-item"><span>📅 ${d.jour} · ${d.debut} – ${d.fin}</span><button type="button" onclick="removeDispo(${i})">✕</button></div>`
+  ).join('');
+  hidden.innerHTML = dispos.map((d, i) =>
+    `<input type="hidden" name="jours[]" value="${d.jour}">
+     <input type="hidden" name="debut[]" value="${d.debut}">
+     <input type="hidden" name="fin[]" value="${d.fin}">`
+  ).join('');
+}
+</script>
+</body>
+</html>

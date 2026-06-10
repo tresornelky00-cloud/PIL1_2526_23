@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connexion — IFRI MentorLink</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"/>
+  <style>
+    body {
+      background: linear-gradient(135deg, #F5F7FA 0%, #E4E8F0 100%);
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; padding: 2rem;
+    }
+    .auth-card {
+      background: var(--white); width: 100%; max-width: 420px;
+      border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+      overflow: hidden; border: 1.5px solid var(--gray-mid);
+    }
+    .auth-header {
+      background: var(--dark-navy); padding: 1.75rem;
+      text-align: center;
+    }
+    .auth-logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .auth-logo img { height: 36px; }
+    .auth-logo .ifri   { color: var(--blue); }
+    .auth-logo .mentor { color: var(--orange); }
+    .auth-subtitle { color: rgba(255,255,255,0.6); font-size: 0.82rem; margin-top: 0.4rem; }
+    .auth-body { padding: 2rem 1.75rem; }
+    .auth-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem; margin-bottom: 1.5rem; text-align: center; }
+    .auth-footer { text-align: center; margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-soft); }
+    .auth-footer a { color: var(--blue); font-weight: 600; }
+    .forgot { font-size: 0.8rem; color: var(--blue); text-align: right; display: block; margin-top: 0.3rem; }
+    .watermark {
+      position: fixed; z-index: 0; opacity: 0.04;
+      font-size: 15vw; font-weight: 900; color: var(--blue);
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      pointer-events: none; user-select: none;
+      font-family: 'Syne', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="watermark">IFRI</div>
+
+  <div class="auth-card" style="position:relative;z-index:1">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" onerror="this.style.display='none'">
+        <span><span class="ifri">IFRI</span> <span class="mentor">MentorLink</span></span>
+      </div>
+      <div class="auth-subtitle">Plateforme de mentorat étudiant</div>
+    </div>
+    <div class="triband"></div>
+    <div class="auth-body">
+      <div class="auth-title">Se connecter</div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('auth.login') }}">
+        <div class="form-group">
+          <label>Email ou numéro de téléphone</label>
+          <input type="text" name="identifiant" class="input-field" required placeholder="exemple@ifri.uac.bj ou 01XXXXXXXX">
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input type="password" name="mot_de_passe" class="input-field" required placeholder="Votre mot de passe">
+          <a href="#" class="forgot">Mot de passe oublié ?</a>
+        </div>
+        <button type="submit" class="btn btn-blue" style="width:100%;justify-content:center;padding:0.75rem;margin-top:0.5rem;font-size:0.95rem;">
+          Connexion →
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Pas encore de compte ? <a href="{{ url_for('auth.inscription') }}">Créer un compte</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

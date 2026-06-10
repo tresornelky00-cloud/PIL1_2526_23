@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Messages — IFRI MentorLink{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-title">💬 Messages</div>
+</div>
+
+<div class="page-body">
+  {% if conversations %}
+    <div style="display:flex;flex-direction:column;gap:0.75rem;max-width:700px;">
+      {% for item in conversations %}
+      <a href="{{ url_for('messages.ouvrir_conversation', user_id=item.interlocuteur.id) }}"
+         style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--white);border-radius:var(--radius-lg);border:1.5px solid var(--gray-mid);transition:all var(--transition);"
+         onmouseover="this.style.borderColor='var(--blue)';this.style.boxShadow='var(--shadow)'"
+         onmouseout="this.style.borderColor='var(--gray-mid)';this.style.boxShadow='none'">
+        <div class="avatar avatar-blue">
+          {{ item.interlocuteur.prenom[0]|upper }}{{ item.interlocuteur.nom[0]|upper }}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-weight:600;font-size:0.9rem;">{{ item.interlocuteur.prenom }} {{ item.interlocuteur.nom }}</div>
+            {% if item.dernier_msg %}
+              <div style="font-size:0.72rem;color:var(--text-soft);">{{ item.dernier_msg.date_envoi.strftime('%H:%M') }}</div>
+            {% endif %}
+          </div>
+          <div style="font-size:0.8rem;color:var(--text-soft);margin-top:0.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+            {{ item.interlocuteur.niveau }} — {{ item.interlocuteur.filiere }}
+            {% if item.dernier_msg %}
+              · {{ item.dernier_msg.contenu[:40] }}{% if item.dernier_msg.contenu|length > 40 %}…{% endif %}
+            {% endif %}
+          </div>
+        </div>
+        {% if item.non_lus > 0 %}
+          <span class="badge badge-blue">{{ item.non_lus }}</span>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">💬</div>
+      <p>Aucune conversation pour l'instant.</p>
+      <p style="margin-top:0.5rem;">Contacte un mentor depuis la page Matching !</p>
+      <a href="{{ url_for('matching.index') }}" class="btn btn-primary" style="margin-top:1.5rem;">Trouver un mentor</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Mon profil — IFRI MentorLink{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-title">👤 Mon profil</div>
+  <button form="profilForm" type="submit" class="btn btn-primary">Sauvegarder</button>
+</div>
+
+<div class="page-body" style="max-width:900px;">
+  <form id="profilForm" method="POST" action="{{ url_for('profil.profil') }}">
+
+    <!-- Infos générales -->
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;">
+        <div class="avatar avatar-xl avatar-blue">{{ current_user.prenom[0]|upper }}{{ current_user.nom[0]|upper }}</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;">{{ current_user.prenom }} {{ current_user.nom }}</div>
+          <div style="color:var(--text-soft);font-size:0.85rem;">{{ current_user.email }}</div>
+          <div style="color:var(--text-soft);font-size:0.85rem;">{{ current_user.telephone }}</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div class="form-group" style="margin:0">
+          <label>Filière</label>
+          <select name="filiere" class="input-field">
+            {% for f in ['GL','IA','IM','SE_IoT','SI'] %}
+              <option value="{{ f }}" {% if current_user.filiere == f %}selected{% endif %}>{{ f }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>Niveau</label>
+          <select name="niveau" class="input-field">
+            {% for n in ['L1','L2','L3','M1','M2'] %}
+              <option value="{{ n }}" {% if current_user.niveau == n %}selected{% endif %}>{{ n }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin:0">
+        <label>Bio</label>
+        <textarea name="bio" class="input-field" placeholder="Décris-toi en quelques mots…">{{ current_user.bio or '' }}</textarea>
+      </div>
+    </div>
+
+    <!-- Compétences -->
+    <div class="card" style="margin-bottom:1.5rem;">
+      <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:1rem;">🧠 Compétences</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div>
+          <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.75rem;color:var(--blue);">✅ Je maîtrise</div>
+          <div style="display:flex;flex-direction:column;gap:0.4rem;max-height:280px;overflow-y:auto;">
+            {% for comp in competences %}
+            <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer;padding:0.4rem 0.5rem;border-radius:8px;transition:background var(--transition);" onmouseover="this.style.background='var(--blue-light)'" onmouseout="this.style.background='transparent'">
+              <input type="checkbox" name="maitrisees" value="{{ comp.id }}" {% if comp.id in maitrisees_ids %}checked{% endif %}
+                     style="accent-color:var(--blue);">
+              {{ comp.nom }}
+              <span class="tag tag-gray" style="font-size:0.65rem;margin-left:auto;">{{ comp.categorie }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div>
+          <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.75rem;color:var(--orange);">🔴 Mes lacunes</div>
+          <div style="display:flex;flex-direction:column;gap:0.4rem;max-height:280px;overflow-y:auto;">
+            {% for comp in competences %}
+            <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer;padding:0.4rem 0.5rem;border-radius:8px;transition:background var(--transition);" onmouseover="this.style.background='var(--orange-light)'" onmouseout="this.style.background='transparent'">
+              <input type="checkbox" name="lacunes" value="{{ comp.id }}" {% if comp.id in lacunes_ids %}checked{% endif %}
+                     style="accent-color:var(--orange);">
+              {{ comp.nom }}
+              <span class="tag tag-gray" style="font-size:0.65rem;margin-left:auto;">{{ comp.categorie }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disponibilités -->
+    <div class="card">
+      <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:1rem;">📅 Disponibilités</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.75rem;align-items:end;margin-bottom:1rem;">
+        <div class="form-group" style="margin:0"><label>Jour</label>
+          <select id="dJour" class="input-field">
+            {% for j in ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'] %}
+              <option>{{ j }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group" style="margin:0"><label>Début</label><input type="time" id="dDebut" class="input-field" value="08:00"></div>
+        <div class="form-group" style="margin:0"><label>Fin</label><input type="time" id="dFin" class="input-field" value="10:00"></div>
+        <button type="button" class="btn btn-blue" onclick="addDispo()">+ Ajouter</button>
+      </div>
+
+      <div id="dispoList">
+        {% for d in dispos %}
+        <div class="dispo-item" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.75rem;background:var(--blue-light);border-radius:var(--radius);font-size:0.82rem;margin-bottom:0.5rem;">
+          <span style="flex:1;color:var(--text-mid);">📅 {{ d.jour }} · {{ d.heure_debut.strftime('%H:%M') }} – {{ d.heure_fin.strftime('%H:%M') }}</span>
+          <input type="hidden" name="jours[]" value="{{ d.jour }}">
+          <input type="hidden" name="debut[]" value="{{ d.heure_debut.strftime('%H:%M') }}">
+          <input type="hidden" name="fin[]" value="{{ d.heure_fin.strftime('%H:%M') }}">
+        </div>
+        {% endfor %}
+      </div>
+      <div id="newDispos"></div>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function addDispo() {
+  const jour = document.getElementById('dJour').value;
+  const debut = document.getElementById('dDebut').value;
+  const fin = document.getElementById('dFin').value;
+  if (!debut || !fin || debut >= fin) { alert('Créneau invalide.'); return; }
+  const div = document.createElement('div');
+  div.style = 'display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.75rem;background:var(--blue-light);border-radius:var(--radius);font-size:0.82rem;margin-bottom:0.5rem;';
+  div.innerHTML = `<span style="flex:1;color:var(--text-mid);">📅 ${jour} · ${debut} – ${fin}</span>
+    <input type="hidden" name="jours[]" value="${jour}">
+    <input type="hidden" name="debut[]" value="${debut}">
+    <input type="hidden" name="fin[]" value="${fin}">
+    <button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;color:var(--error);">✕</button>`;
+  document.getElementById('newDispos').appendChild(div);
+}
+</script>
+{% endblock %}

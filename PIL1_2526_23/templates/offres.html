@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Offres — IFRI MentorLink{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">📋 Offres de mentorat</div>
+  <a href="{{ url_for('profil.nouvelle_offre') }}" class="btn btn-primary">+ Publier une offre</a>
+</div>
+<div class="page-body">
+  <!-- Filtres -->
+  <form method="GET" style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+    <select name="filiere" class="input-field" style="width:auto;">
+      <option value="">Toutes les filières</option>
+      {% for f in ['GL','IA','IM','SE_IoT','SI'] %}
+        <option value="{{ f }}" {% if filiere == f %}selected{% endif %}>{{ f }}</option>
+      {% endfor %}
+    </select>
+    <select name="competence" class="input-field" style="width:auto;">
+      <option value="">Toutes les compétences</option>
+      {% for c in competences %}
+        <option value="{{ c.id }}" {% if comp_id == c.id %}selected{% endif %}>{{ c.nom }}</option>
+      {% endfor %}
+    </select>
+    <select name="type_offre" class="input-field" style="width:auto;">
+      <option value="">Offres & Demandes</option>
+      <option value="offre" {% if type_off == 'offre' %}selected{% endif %}>Offres de mentorat</option>
+      <option value="demande" {% if type_off == 'demande' %}selected{% endif %}>Demandes de mentorat</option>
+    </select>
+    <button type="submit" class="btn btn-blue">Filtrer</button>
+    <a href="{{ url_for('matching.liste_offres') }}" class="btn btn-ghost">Réinitialiser</a>
+  </form>
+
+  {% if offres %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
+      {% for offre in offres %}
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+          <span class="tag {% if offre.type_offre == 'offre' %}tag-blue{% else %}tag-orange{% endif %}">
+            {{ '📤 Offre' if offre.type_offre == 'offre' else '📥 Demande' }}
+          </span>
+          <span class="tag tag-gray">{{ offre.format }}</span>
+        </div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:0.4rem;">{{ offre.competence.nom }}</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+          <div class="avatar avatar-blue" style="width:28px;height:28px;font-size:0.7rem;">{{ offre.auteur.prenom[0]|upper }}{{ offre.auteur.nom[0]|upper }}</div>
+          <div style="font-size:0.8rem;color:var(--text-mid);">{{ offre.auteur.prenom }} {{ offre.auteur.nom }} · {{ offre.auteur.niveau }}</div>
+        </div>
+        {% if offre.description %}
+          <p style="font-size:0.82rem;color:var(--text-soft);line-height:1.6;margin-bottom:0.75rem;">{{ offre.description[:100] }}{% if offre.description|length > 100 %}…{% endif %}</p>
+        {% endif %}
+        {% if offre.user_id != current_user.id %}
+        <a href="{{ url_for('messages.ouvrir_conversation', user_id=offre.user_id) }}" class="btn btn-blue btn-sm" style="width:100%;justify-content:center;">💬 Contacter</a>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state"><div class="icon">📋</div><p>Aucune offre trouvée.</p></div>
+  {% endif %}
+</div>
+{% endblock %}
